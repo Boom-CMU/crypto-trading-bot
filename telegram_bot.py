@@ -135,8 +135,8 @@ def build_message(scan: dict, top_n: int = 8) -> str:
             "",
         ]
 
-    # Filter only grade S/A/B and top_n
-    shown = [o for o in opps if o.get("grade", "D") in ("S", "A", "B")][:top_n]
+    # Filter grade A/B+/B and above, fallback to top_n
+    shown = [o for o in opps if o.get("grade", "F") in ("A", "B+", "B")][:top_n]
     if not shown:
         shown = opps[:top_n]
 
