@@ -1,0 +1,164 @@
+{
+  "timestamp": "2026-04-28T16:48:28.985905+00:00",
+  "btc_regime": "RANGING",
+  "btc_change_24h_pct": -0.91,
+  "top_15_coins": [
+    {
+      "rank": 1,
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "price_usd": 75920,
+      "market_cap_usd": 1519625911662,
+      "change_24h_pct": -0.92,
+      "change_7d_pct": 0.15,
+      "volume_24h_usd": 34735338321
+    },
+    {
+      "rank": 2,
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "price_usd": 2275.89,
+      "market_cap_usd": 274529872056,
+      "change_24h_pct": -0.08,
+      "change_7d_pct": -1.42,
+      "volume_24h_usd": 12504525965
+    },
+    {
+      "rank": 3,
+      "symbol": "USDT",
+      "name": "Tether",
+      "price_usd": 0.999828,
+      "market_cap_usd": 189700534096,
+      "change_24h_pct": -0.01,
+      "change_7d_pct": -0.03,
+      "volume_24h_usd": 57192621253
+    },
+    {
+      "rank": 4,
+      "symbol": "XRP",
+      "name": "XRP",
+      "price_usd": 1.37,
+      "market_cap_usd": 84552283483,
+      "change_24h_pct": -1.16,
+      "change_7d_pct": -4.31,
+      "volume_24h_usd": 1654925195
+    },
+    {
+      "rank": 5,
+      "symbol": "BNB",
+      "name": "BNB",
+      "price_usd": 622.34,
+      "market_cap_usd": 83847700866,
+      "change_24h_pct": 0.11,
+      "change_7d_pct": -1.51,
+      "volume_24h_usd": 777886053
+    },
+    {
+      "rank": 6,
+      "symbol": "USDC",
+      "name": "USDC",
+      "price_usd": 0.999835,
+      "market_cap_usd": 77543542045,
+      "change_24h_pct": -0.0,
+      "change_7d_pct": 0.0,
+      "volume_24h_usd": 13062541744
+    },
+    {
+      "rank": 7,
+      "symbol": "SOL",
+      "name": "Solana",
+      "price_usd": 83.38,
+      "market_cap_usd": 47998028481,
+      "change_24h_pct": -1.1,
+      "change_7d_pct": -3.0,
+      "volume_24h_usd": 2580387435
+    },
+    {
+      "rank": 8,
+      "symbol": "TRX",
+      "name": "TRON",
+      "price_usd": 0.323364,
+      "market_cap_usd": 30645906399,
+      "change_24h_pct": -0.49,
+      "change_7d_pct": -2.35,
+      "volume_24h_usd": 398637531
+    },
+    {
+      "rank": 9,
+      "symbol": "FIGR_HELOC",
+      "name": "Figure Heloc",
+      "price_usd": 1.039,
+      "market_cap_usd": 17857885512,
+      "change_24h_pct": -0.09,
+      "change_7d_pct": 0.83,
+      "volume_24h_usd": 97256141
+    },
+    {
+      "rank": 10,
+      "symbol": "DOGE",
+      "name": "Dogecoin",
+      "price_usd": 0.09936,
+      "market_cap_usd": 15305778890,
+      "change_24h_pct": 2.03,
+      "change_7d_pct": 4.98,
+      "volume_24h_usd": 1608704905
+    },
+    {
+      "rank": 11,
+      "symbol": "WBT",
+      "name": "WhiteBIT Coin",
+      "price_usd": 53.73,
+      "market_cap_usd": 11469792560,
+      "change_24h_pct": -0.69,
+      "change_7d_pct": -1.88,
+      "volume_24h_usd": 57917773
+    },
+    {
+      "rank": 12,
+      "symbol": "USDS",
+      "name": "USDS",
+      "price_usd": 0.999789,
+      "market_cap_usd": 11064847704,
+      "change_24h_pct": 0.01,
+      "change_7d_pct": -0.0,
+      "volume_24h_usd": 31468600
+    },
+    {
+      "rank": 13,
+      "symbol": "LEO",
+      "name": "LEO Token",
+      "price_usd": 10.37,
+      "market_cap_usd": 9547131234,
+      "change_24h_pct": 0.23,
+      "change_7d_pct": -0.07,
+      "volume_24h_usd": 383563
+    },
+    {
+      "rank": 14,
+      "symbol": "HYPE",
+      "name": "Hyperliquid",
+      "price_usd": 39.54,
+      "market_cap_usd": 9415696539,
+      "change_24h_pct": -5.15,
+      "change_7d_pct": -1.12,
+      "volume_24h_usd": 256221591
+    },
+    {
+      "rank": 15,
+      "symbol": "ADA",
+      "name": "Cardano",
+      "price_usd": 0.245891,
+      "market_cap_usd": 9087840831,
+      "change_24h_pct": 0.54,
+      "change_7d_pct": -1.12,
+      "volume_24h_usd": 262967566
+    }
+  ],
+  "global": {
+    "btc_dominance_pct": 57.9,
+    "eth_dominance_pct": 10.5,
+    "total_market_cap_usd": 2625207662261.453,
+    "market_cap_change_24h_pct": -0.57,
+    "active_coins": 17517
+  }
+}

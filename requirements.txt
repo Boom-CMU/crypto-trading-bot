@@ -1,0 +1,14 @@
+# Core
+requests
+python-dotenv
+
+# AI analysis (Tier 1 + 2)
+anthropic
+groq
+
+# Sentiment
+duckduckgo-search
+
+# Optional fallback data
+yfinance
+pandas

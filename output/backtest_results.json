@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-04-29T19:50:32.520241+00:00",
+  "symbols_tested": [
+    "BTC",
+    "ETH",
+    "BNB",
+    "SOL",
+    "XRP",
+    "ADA",
+    "DOGE",
+    "AVAX",
+    "MATIC",
+    "DOT",
+    "LINK",
+    "UNI",
+    "LTC",
+    "ATOM",
+    "NEAR",
+    "APT",
+    "SUI",
+    "INJ",
+    "ARB",
+    "OP",
+    "AAVE",
+    "TRX",
+    "XLM",
+    "ICP",
+    "FET",
+    "RENDER",
+    "SAND",
+    "MANA",
+    "GALA",
+    "AXS",
+    "GRT",
+    "FTM",
+    "CRV",
+    "PEPE",
+    "SHIB"
+  ],
+  "total_setups": 13160,
+  "overall_accuracy": 15.6,
+  "fixed_horizon": 3,
+  "atr_win_multiplier": 1.0,
+  "aggregates": {
+    "by_grade": {
+      "D": {
+        "win_rate": 15.3,
+        "n": 3237
+      },
+      "D+": {
+        "win_rate": 14.6,
+        "n": 1114
+      },
+      "B": {
+        "win_rate": 21.4,
+        "n": 374
+      },
+      "C": {
+        "win_rate": 17.3,
+        "n": 1015
+      },
+      "C+": {
+        "win_rate": 26.3,
+        "n": 482
+      },
+      "F": {
+        "win_rate": 14.3,
+        "n": 6723
+      },
+      "B+": {
+        "win_rate": 20.9,
+        "n": 158
+      },
+      "A": {
+        "win_rate": 24.6,
+        "n": 57
+      }
+    },
+    "by_phase": {
+      "CONSOLIDATING_FLAT": {
+        "win_rate": 18.8,
+        "n": 2420
+      },
+      "CONSOLIDATING_HIGHER_LOWS": {
+        "win_rate": 23.3,
+        "n": 683
+      },
+      "UPTREND_PULLBACK": {
+        "win_rate": 18.9,
+        "n": 1315
+      },
+      "TIGHT_RANGE_HIGHER_LOWS": {
+        "win_rate": 24.2,
+        "n": 790
+      },
+      "VOLATILE_NO_STRUCTURE": {
+        "win_rate": 12.5,
+        "n": 7952
+      }
+    },
+    "by_rsi_zone": {
+      "recovering": {
+        "win_rate": 13.2,
+        "n": 4561
+      },
+      "momentum": {
+        "win_rate": 18.2,
+        "n": 4084
+      },
+      "overbought": {
+        "win_rate": 21.7,
+        "n": 479
+      },
+      "hot": {
+        "win_rate": 18.0,
+        "n": 1083
+      },
+      "oversold": {
+        "win_rate": 13.7,
+        "n": 2953
+      }
+    },
+    "by_vol_spike": {
+      "<1.2x": {
+        "win_rate": 14.5,
+        "n": 9677
+      },
+      "1.5-2x": {
+        "win_rate": 19.9,
+        "n": 1077
+      },
+      "1.2-1.5x": {
+        "win_rate": 15.4,
+        "n": 1587
+      },
+      "2-3x": {
+        "win_rate": 20.6,
+        "n": 582
+      },
+      "3x+": {
+        "win_rate": 30.4,
+        "n": 237
+      }
+    },
+    "by_ma_align": {
+      "ma25_only": {
+        "win_rate": 18.5,
+        "n": 2308
+      },
+      "both": {
+        "win_rate": 17.3,
+        "n": 2954
+      },
+      "ma99_only": {
+        "win_rate": 14.2,
+        "n": 1197
+      },
+      "neither": {
+        "win_rate": 14.1,
+        "n": 6701
+      }
+    },
+    "by_score_range": {
+      "30-39": {
+        "win_rate": 14.9,
+        "n": 4033
+      },
+      "40-49": {
+        "win_rate": 15.0,
+        "n": 2750
+      },
+      "60-69": {
+        "win_rate": 21.2,
+        "n": 532
+      },
+      "50-59": {
+        "win_rate": 20.2,
+        "n": 1497
+      },
+      "20-29": {
+        "win_rate": 14.1,
+        "n": 4291
+      },
+      "70-79": {
+        "win_rate": 24.6,
+        "n": 57
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "LDO",
+  "timestamp": "2026-04-27T17:31:48.647368Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 LDO/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.396800\n   1h: +0.84%  |  24h: -10.19%  |  7d: +0.00%\n   Volume 24h: $29.81M  |  vs Average: +265%\n\n📈 คะแนนย่อย:\n  Momentum        : 6.0/10\n  Upside Potential: 4.5/10\n  Technical       : 8.0/10\n  Risk/Volatility : 6.0/10\n\n🎯 โอกาส:\n  ขึ้น: 57%  |  ลง: 43%\n  ถึง Target $0.661186: +66.6%\n  ATH Distance: -35.5%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+37.96% / -6.45%]\n\n🏆 คะแนนความคุ้มค่า: 66/100 — Good Opportunity\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.396800\n  Stop Loss  : $0.337280  (-15.0%) ← ไม่เกิน 15%\n  TP1        : $0.528993  (+33.3%) ← เป้าแรก ทำกำไรบางส่วน\n  TP2        : $0.661186  (+66.6%) ← เป้าหลัก\n  TP3        : $0.837443  (+111.0%) ← moon target\n  R/R Ratio  : 1:4.4\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.380100  —  แนวต้าน: $0.470000\n  จังหวะเข้า : volume spike แล้ว — เข้าได้แต่ระวัง overextension\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 9  |  Bear: 1\n  🔥 RSI 56.6 — Sweet spot! momentum กำลังสร้างตัว\n  ✅ RSI 4h 55.6 — Intraday momentum บวก\n  🚀 Volume spike ×3.6 — MAJOR accumulation signal!\n  ✅ ราคา > MA99 — Bull market structure\n  ✅ ราคา > MA25 — Short-term uptrend\n  ⚠️ Phase: VOLATILE — ไม่มี structure ระวัง\n\n📍 PRICE STRUCTURE:\n  Phase       : VOLATILE_NO_STRUCTURE\n  Range       : 58.43%\n  Higher Lows : False\n  Volume Trend: stable\n  Volume Spike: ×3.65\n\n🇹🇭 ✅ Bitkub: ฿12.7300 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "data_snapshot": {
+    "price": 0.3968,
+    "change_24h_pct": -10.19,
+    "change_7d_pct": null,
+    "rsi_14": 56.62,
+    "rsi_14_4h": 55.62,
+    "volume_spike": 3.65,
+    "phase": "VOLATILE_NO_STRUCTURE",
+    "opportunity_grade": "C",
+    "opportunity_score": 47,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 12.73
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "symbol": "PENGU",
+  "timestamp": "2026-04-29T05:19:04.585010Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 PENGU/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.010418\n   1h: +0.35%  |  24h: +3.42%  |  7d: +0.00%\n   Volume 24h: $49.38M  |  vs Average: +78%\n\n📈 คะแนนย่อย:\n  Momentum        : 6.5/10\n  Upside Potential: 3.0/10\n  Technical       : 7.5/10\n  Risk/Volatility : 6.0/10\n\n🎯 โอกาส:\n  ขึ้น: 58%  |  ลง: 42%\n  ถึง Target $0.015029: +44.3%\n  ATH Distance: -1.7%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+25.69% / -4.66%]\n\n🏆 คะแนนความคุ้มค่า: 58/100 — Speculative  |  ความแม่นยำ: ~21%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : 👀 Hold (Speculative)\n  Entry      : $0.010418\n  Stop Loss  : $0.009265  (-11.1%) ← ไม่เกิน 15%\n  TP1        : $0.012724  (+22.1%) ← เป้าแรก ทำกำไรบางส่วน\n  TP2        : $0.015029  (+44.3%) ← เป้าหลัก\n  TP3        : $0.018104  (+73.8%) ← moon target\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.009765  —  แนวต้าน: $0.010602\n  จังหวะเข้า : รอ retest $0.009765 ก่อนเข้า\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Swing Trade (7 วัน) (auto)\n  เซสชั่นหลัก : Asian Open (08:00-10:00 ICT)  ★\n  เซสชั่นรอง  : US Open (20:30-22:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม\n  หลีกเลี่ยง  : 05:00-08:00 ICT (low-volume dead zone)\n  ระดับเร่งด่วน: 🟡 MEDIUM — ตั้ง alert รอ signal\n  หน้าต่างถัดไป: Asian Open ใน 19.7 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 6  |  Bear: 1\n  ⚠️ RSI 79.3 — Overbought ระวัง exhaustion\n  ✅ RSI 4h 68.2 — Intraday momentum บวก\n  📊 Volume ×1.8 — Above average\n  ✅ ราคา > MA99 — Bull market structure\n  ✅ ราคา > MA25 — Short-term uptrend\n  📈 Phase: UPTREND_PULLBACK — Healthy dip in uptrend\n\n📍 PRICE STRUCTURE:\n  Phase       : UPTREND_PULLBACK\n  Range       : 67.46%\n  Higher Lows : True\n  Volume Trend: stable\n  Volume Spike: ×1.78\n\n🇹🇭 ✅ Bitkub: ฿0.3418 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "forecast": {
+    "expected_pct": 12.11,
+    "horizon_days": 7,
+    "horizon_source": "auto",
+    "accuracy_pct": 20.8
+  },
+  "timing": {
+    "best_session": "Asian Open (08:00-10:00 ICT)",
+    "best_session_short": "Asian Open",
+    "secondary_session": "US Open (20:30-22:00 ICT)",
+    "entry_condition": "เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม",
+    "avoid_window": "05:00-08:00 ICT (low-volume dead zone)",
+    "horizon_label": "Swing Trade (7 วัน) (auto)",
+    "urgency": "MEDIUM",
+    "urgency_display": "🟡 MEDIUM — ตั้ง alert รอ signal",
+    "hours_to_next": 19.7,
+    "next_window_str": "ใน 19.7 ชม."
+  },
+  "data_snapshot": {
+    "price": 0.010418,
+    "change_24h_pct": 3.42,
+    "change_7d_pct": null,
+    "rsi_14": 79.34,
+    "rsi_14_4h": 68.21,
+    "volume_spike": 1.78,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "C",
+    "opportunity_score": 38,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 0.341798
+  }
+}

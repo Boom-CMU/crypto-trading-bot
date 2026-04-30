@@ -1,0 +1,50 @@
+name: Daily Crypto Scan → Telegram
+
+on:
+  schedule:
+    # 01:00 UTC = 08:00 Bangkok (UTC+7)
+    - cron: "0 1 * * *"
+  workflow_dispatch:  # รันมือได้จาก GitHub Actions tab
+
+jobs:
+  scan-and-notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Run opportunity scanner
+        env:
+          GROQ_API_KEY:      ${{ secrets.GROQ_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scanner.py --top 15 --min-change 2
+
+      - name: Send Telegram report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GROQ_API_KEY:       ${{ secrets.GROQ_API_KEY }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python telegram_bot.py --top 8
+
+      - name: Upload scan output (optional artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-output-${{ github.run_number }}
+          path: output/
+          retention-days: 7

@@ -1,0 +1,25 @@
+{
+  "symbol": "ADA",
+  "timestamp": "2026-04-28T17:03:27.204537Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 ADA/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.246000\n   1h: -0.04%  |  24h: +0.24%  |  7d: +0.00%\n   Volume 24h: $15.46M  |  vs Average: -49%\n\n📈 คะแนนย่อย:\n  Momentum        : 1.0/10\n  Upside Potential: 5.0/10\n  Technical       : 5.5/10\n  Risk/Volatility : 8.0/10\n\n🎯 โอกาส:\n  ขึ้น: 41%  |  ลง: 59%\n  ถึง Target $0.304757: +23.9%\n  ATH Distance: -34.5%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+9.80% / -3.54%]\n\n🏆 คะแนนความคุ้มค่า: 39/100 — High Risk  |  ความแม่นยำ: ~24%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ⚠️ Sell\n  Entry      : $0.246000\n  Stop Loss  : $0.231311  (-6.0%) ← ไม่เกิน 15%\n  TP1        : $0.275379  (+11.9%) ← เป้าแรก ทำกำไรบางส่วน\n  TP2        : $0.304757  (+23.9%) ← เป้าหลัก\n  TP3        : $0.343929  (+39.8%) ← moon target\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.244300  —  แนวต้าน: $0.248800\n  จังหวะเข้า : รอ retest $0.244300 ก่อนเข้า\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 3  |  Bear: 6\n  🔥 RSI 55.8 — Sweet spot! momentum กำลังสร้างตัว\n  ❌ RSI 4h 32.7 — Intraday อ่อนแรง\n  😴 Volume ×0.5 — ต่ำกว่าปกติ ไม่น่าสนใจ\n  ❌ ราคา < MA99 — Bear market structure\n  ❌ ราคา < MA25 — Short-term weakness\n  📈 Phase: UPTREND_PULLBACK — Healthy dip in uptrend\n  📊 Volume trend: ลดลง — weak conviction\n\n📍 PRICE STRUCTURE:\n  Phase       : UPTREND_PULLBACK\n  Range       : 23.0%\n  Higher Lows : True\n  Volume Trend: decreasing\n  Volume Spike: ×0.51\n\n🇹🇭 ✅ Bitkub: ฿7.9800 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "forecast": {
+    "expected_pct": 0.62,
+    "horizon_days": 7,
+    "horizon_source": "auto",
+    "accuracy_pct": 24.3
+  },
+  "data_snapshot": {
+    "price": 0.246,
+    "change_24h_pct": 0.24,
+    "change_7d_pct": null,
+    "rsi_14": 55.8,
+    "rsi_14_4h": 32.72,
+    "volume_spike": 0.51,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "C",
+    "opportunity_score": 34,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 7.98
+  }
+}

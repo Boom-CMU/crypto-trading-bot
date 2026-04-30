@@ -1,0 +1,37 @@
+{
+  "symbol": "REZ",
+  "timestamp": "2026-04-29T11:20:04.095796Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 REZ/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.004300\n   1h: -0.46%  |  7d: +0.00%\n   Volume 24h: $3.19M  |  vs Average: +119%\n\n📈 คะแนนย่อย:\n  Momentum        : 7.0/10\n  Upside Potential: 5.0/10\n  Technical       : 8.0/10\n  Risk/Volatility : 5.0/10\n\n🎯 โอกาส:\n  ขึ้น: 60%  |  ลง: 40%\n  ถึง Target $0.006177: +43.7%\n  ATH Distance: -19.8%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+26.22% / -4.36%]\n\n🏆 คะแนนความคุ้มค่า: 66/100 — Good Opportunity  |  ความแม่นยำ: ~19%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.004300\n  Stop Loss  : $0.003831  (-10.9%) ← ไม่เกิน 15%\n  TP1        : $0.005239  (+21.8%) ← ภายใน 1 ชม.\n  TP2        : $0.006177  (+43.7%) ← ภายใน 24 ชม.\n  TP3        : $0.007429  (+72.8%) ← ~3-4 วัน\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.004040  —  แนวต้าน: $0.004550\n  จังหวะเข้า : เข้าได้เลย — แต่ระวัง overextension จาก volume spike\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: ⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน  | RSI 4h neutral — รอทิศทาง breakout\n  หลีกเลี่ยง  : ทุก session จนกว่า structure จะชัดเจน\n  ระดับเร่งด่วน: 🟢 LOW — รอ setup ดีกว่า\n  หน้าต่างถัดไป: US Open ใน 2.2 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 9  |  Bear: 1\n  🔥 RSI 60.6 — Sweet spot! momentum กำลังสร้างตัว\n  ✅ RSI 4h 59.2 — Intraday momentum บวก\n  🔥 Volume spike ×2.2 — Strong buying interest\n  ✅ ราคา > MA99 — Bull market structure\n  ✅ ราคา > MA25 — Short-term uptrend\n  ⚠️ Phase: VOLATILE — ไม่มี structure ระวัง\n  📊 Volume trend: เพิ่มขึ้น — confirms momentum\n\n📍 PRICE STRUCTURE:\n  Phase       : VOLATILE_NO_STRUCTURE\n  Range       : 35.2%\n  Higher Lows : False\n  Volume Trend: increasing\n  Volume Spike: ×2.19\n\n🇹🇭 ✅ Bitkub: ฿0.1406 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "forecast": {
+    "expected_pct": 17.77,
+    "horizon_days": 3,
+    "horizon_source": "auto",
+    "accuracy_pct": 18.9
+  },
+  "timing": {
+    "best_session": "US Open (20:30-22:00 ICT)",
+    "best_session_short": "US Open",
+    "secondary_session": "Asian Open (08:00-10:00 ICT)",
+    "entry_condition": "⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน  | RSI 4h neutral — รอทิศทาง breakout",
+    "avoid_window": "ทุก session จนกว่า structure จะชัดเจน",
+    "horizon_label": "Short-term (3 วัน) (auto)",
+    "urgency": "LOW",
+    "urgency_display": "🟢 LOW — รอ setup ดีกว่า",
+    "hours_to_next": 2.2,
+    "next_window_str": "ใน 2.2 ชม."
+  },
+  "data_snapshot": {
+    "price": 0.0043,
+    "change_24h_pct": 6.17,
+    "change_7d_pct": null,
+    "rsi_14": 60.61,
+    "rsi_14_4h": 59.17,
+    "volume_spike": 2.19,
+    "phase": "VOLATILE_NO_STRUCTURE",
+    "opportunity_grade": "B",
+    "opportunity_score": 53,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 0.1406
+  }
+}

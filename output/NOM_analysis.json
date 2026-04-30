@@ -1,0 +1,37 @@
+{
+  "symbol": "NOM",
+  "timestamp": "2026-04-29T19:58:03.975073Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 NOM/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.003000\n   1h: +0.00%  |  7d: +0.00%\n   Volume 24h: $15.25M  |  vs Average: +352%\n\n📈 คะแนนย่อย:\n  Momentum        : 7.0/10\n  Upside Potential: 6.5/10\n  Technical       : 2.5/10\n  Risk/Volatility : 4.0/10\n\n🎯 โอกาส:\n  ขึ้น: 51%  |  ลง: 49%\n  ถึง Target $0.005190: +73.0%\n  ATH Distance: -85.0%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+37.23% / -7.35%]\n\n🏆 คะแนนความคุ้มค่า: 60/100 — Speculative  |  ความแม่นยำ: ~20%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : 👀 Hold (Speculative)\n  Entry      : $0.003000\n  Stop Loss  : $0.002550  (-15.0%) ← ไม่เกิน 15%\n  TP1        : $0.004095  (+36.5%) ← ภายใน 1 ชม.\n  TP2        : $0.005190  (+73.0%) ← ภายใน 24 ชม.\n  TP3        : $0.006650  (+121.7%) ← ~3-4 วัน\n  R/R Ratio  : 1:4.9\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.002650  —  แนวต้าน: $0.003630\n  จังหวะเข้า : เข้าได้เลย — แต่ระวัง overextension จาก volume spike\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Day Trade (1 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: ⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน\n  หลีกเลี่ยง  : ทุก session จนกว่า structure จะชัดเจน\n  ระดับเร่งด่วน: 🟢 LOW — รอ setup ดีกว่า\n  หน้าต่างถัดไป: US Open ใน 17.5 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 6  |  Bear: 4\n  ⚡ RSI 46.1 — กำลังฟื้นตัว\n  ✅ RSI 4h 64.1 — Intraday momentum บวก\n  🚀 Volume spike ×4.5 — MAJOR accumulation signal!\n  ❌ ราคา < MA99 — Bear market structure\n  ❌ ราคา < MA25 — Short-term weakness\n  ⚠️ Phase: VOLATILE — ไม่มี structure ระวัง\n  📊 Volume trend: เพิ่มขึ้น — confirms momentum\n\n📍 PRICE STRUCTURE:\n  Phase       : VOLATILE_NO_STRUCTURE\n  Range       : 342.78%\n  Higher Lows : False\n  Volume Trend: increasing\n  Volume Spike: ×4.52\n\n🇹🇭 ✅ Bitkub: ฿0.1001 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "forecast": {
+    "expected_pct": 13.29,
+    "horizon_days": 1,
+    "horizon_source": "auto",
+    "accuracy_pct": 20.0
+  },
+  "timing": {
+    "best_session": "US Open (20:30-22:00 ICT)",
+    "best_session_short": "US Open",
+    "secondary_session": "Asian Open (08:00-10:00 ICT)",
+    "entry_condition": "⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน",
+    "avoid_window": "ทุก session จนกว่า structure จะชัดเจน",
+    "horizon_label": "Day Trade (1 วัน) (auto)",
+    "urgency": "LOW",
+    "urgency_display": "🟢 LOW — รอ setup ดีกว่า",
+    "hours_to_next": 17.5,
+    "next_window_str": "ใน 17.5 ชม."
+  },
+  "data_snapshot": {
+    "price": 0.003,
+    "change_24h_pct": 12.78,
+    "change_7d_pct": null,
+    "rsi_14": 46.07,
+    "rsi_14_4h": 64.12,
+    "volume_spike": 4.52,
+    "phase": "VOLATILE_NO_STRUCTURE",
+    "opportunity_grade": "C+",
+    "opportunity_score": 55,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 0.1001
+  }
+}

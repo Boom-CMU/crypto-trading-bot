@@ -1,0 +1,25 @@
+{
+  "symbol": "NEAR",
+  "timestamp": "2026-04-28T17:01:49.098749Z",
+  "tier_used": "Tier 3 — Technical Rules",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 NEAR/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $1.3400\n   1h: +0.15%  |  24h: -0.96%  |  7d: +0.00%\n   Volume 24h: $6.71M  |  vs Average: -55%\n\n📈 คะแนนย่อย:\n  Momentum        : 1.5/10\n  Upside Potential: 4.5/10\n  Technical       : 7.0/10\n  Risk/Volatility : 7.0/10\n\n🎯 โอกาส:\n  ขึ้น: 45%  |  ลง: 55%\n  ถึง Target $1.6769: +25.1%\n  ATH Distance: -17.7%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+11.30% / -3.47%]\n\n🏆 คะแนนความคุ้มค่า: 42/100 — High Risk  |  ความแม่นยำ: ~25%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ⚠️ Sell\n  Entry      : $1.3400\n  Stop Loss  : $1.2558  (-6.3%) ← ไม่เกิน 15%\n  TP1        : $1.5084  (+12.6%) ← เป้าแรก ทำกำไรบางส่วน\n  TP2        : $1.6769  (+25.1%) ← เป้าหลัก\n  TP3        : $1.9014  (+41.9%) ← moon target\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $1.3300  —  แนวต้าน: $1.3670\n  จังหวะเข้า : รอ retest $1.3300 ก่อนเข้า\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 4  |  Bear: 4\n  ⚡ RSI 47.0 — กำลังฟื้นตัว\n  ❌ RSI 4h 29.8 — Intraday อ่อนแรง\n  😴 Volume ×0.5 — ต่ำกว่าปกติ ไม่น่าสนใจ\n  ✅ ราคา > MA99 — Bull market structure\n  ❌ ราคา < MA25 — Short-term weakness\n  📈 Phase: UPTREND_PULLBACK — Healthy dip in uptrend\n  📊 Volume trend: ลดลง — weak conviction\n\n📍 PRICE STRUCTURE:\n  Phase       : UPTREND_PULLBACK\n  Range       : 28.23%\n  Higher Lows : True\n  Volume Trend: decreasing\n  Volume Spike: ×0.45\n\n🇹🇭 ✅ Bitkub: ฿43.3800 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "forecast": {
+    "expected_pct": -2.47,
+    "horizon_days": 7,
+    "horizon_source": "auto",
+    "accuracy_pct": 25.4
+  },
+  "data_snapshot": {
+    "price": 1.34,
+    "change_24h_pct": -0.96,
+    "change_7d_pct": null,
+    "rsi_14": 46.99,
+    "rsi_14_4h": 29.75,
+    "volume_spike": 0.45,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "D",
+    "opportunity_score": 28,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 43.38
+  }
+}
