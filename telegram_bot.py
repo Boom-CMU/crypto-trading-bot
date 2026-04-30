@@ -35,7 +35,7 @@ def _esc(text: str) -> str:
 
 
 def _grade_emoji(grade: str) -> str:
-    return {"S": "🔥", "A": "⚡", "B": "📈", "C": "👀", "D": "😴"}.get(grade, "❓")
+    return {"S": "🔥", "A": "⚡", "B": "📈", "C": "👀", "D": "😴", "F": "😴"}.get(grade, "😴")
 
 
 def _regime_emoji(regime: str) -> str:
