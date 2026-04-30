@@ -36,7 +36,7 @@ def _esc(text: str) -> str:
 
 def _grade_emoji(grade: str) -> str:
     return {
-        "S": "🔥", "A": "⚡",
+        "A": "🔥",
         "B+": "📈", "B": "📈",
         "C+": "👀", "C": "👀",
         "D+": "😐", "D": "😴",

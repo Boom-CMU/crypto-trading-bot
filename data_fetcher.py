@@ -439,6 +439,10 @@ def scan_opportunities(
                 c.get("opportunity_score", c["quick_score"])
             )
 
+    for c in pool:
+        if "grade" not in c:
+            c["grade"] = _calc_opportunity_grade(c.get("opportunity_score", c["quick_score"]))
+
     pool.sort(key=lambda x: x.get("opportunity_score", x["quick_score"]), reverse=True)
 
     return {
