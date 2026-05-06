@@ -80,24 +80,25 @@ def _phase_short(phase: str) -> str:
     }.get(phase, phase or "N/A")
 
 
-def _fmt_thb(price) -> str:
+def _fmt_usd(price) -> str:
     if not price:
         return "N/A"
     p = float(price)
-    if p >= 1_000_000: return f"฿{p/1_000_000:.2f}M"
-    if p >= 1_000:     return f"฿{p:,.0f}"
-    if p >= 1:         return f"฿{p:,.2f}"
-    return f"฿{p:.6f}"
+    if p >= 1_000_000: return f"${p/1_000_000:.2f}M"
+    if p >= 1_000:     return f"${p:,.2f}"
+    if p >= 1:         return f"${p:,.4f}"
+    if p >= 0.01:      return f"${p:.4f}"
+    return f"${p:.8f}"
 
 
-def _fmt_vol_thb(vol) -> str:
+def _fmt_vol_usd(vol) -> str:
     if not vol:
         return "N/A"
     v = float(vol)
-    if v >= 1_000_000_000: return f"฿{v/1e9:.1f}B"
-    if v >= 1_000_000:     return f"฿{v/1e6:.1f}M"
-    if v >= 1_000:         return f"฿{v/1e3:.0f}K"
-    return f"฿{v:.0f}"
+    if v >= 1_000_000_000: return f"${v/1e9:.1f}B"
+    if v >= 1_000_000:     return f"${v/1e6:.1f}M"
+    if v >= 1_000:         return f"${v/1e3:.0f}K"
+    return f"${v:.0f}"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -136,7 +137,7 @@ def build_message(scan: dict, top_n: int = 8) -> str:
         ]
 
     # Filter grade A/B+/B and above, fallback to top_n
-    shown = [o for o in opps if o.get("grade", "F") in ("A", "B+", "B")][:top_n]
+    shown = [o for o in opps if o.get("grade", "F") in ("A", "B+", "B", "C+", "C")][:top_n]
     if not shown:
         shown = opps[:top_n]
 
@@ -147,16 +148,22 @@ def build_message(scan: dict, top_n: int = 8) -> str:
         lines.append("")
 
         for coin in shown:
-            sym    = coin.get("symbol", "?")
-            grade  = coin.get("grade", "?")
-            score  = coin.get("opportunity_score") or coin.get("quick_score", 0)
-            price  = coin.get("price_thb")
-            chg24  = coin.get("change_24h_pct", 0)
-            vol    = coin.get("volume_thb")
-            phase  = coin.get("phase", "")
-            rsi    = coin.get("rsi_14")
-            spike  = coin.get("volume_spike")
-            chg7d  = coin.get("change_7d_pct")
+            sym       = coin.get("symbol", "?")
+            grade     = coin.get("grade", "?")
+            score     = coin.get("opportunity_score") or coin.get("quick_score", 0)
+            price_usd = coin.get("price_usd")
+            price_thb = coin.get("price_thb")
+            chg24     = coin.get("change_24h_pct", 0)
+            vol_thb   = coin.get("volume_thb")
+            phase     = coin.get("phase", "")
+            rsi       = coin.get("rsi_14")
+            spike     = coin.get("volume_spike")
+            chg7d     = coin.get("change_7d_pct")
+
+            # คำนวณ volume USD จาก volume THB
+            vol_usd = None
+            if vol_thb and price_thb and price_thb > 0 and price_usd:
+                vol_usd = vol_thb * (price_usd / price_thb)
 
             chg24_str = f"{chg24:+.1f}%" if chg24 else "N/A"
             chg7d_str = f"7d {chg7d:+.1f}%" if chg7d is not None else ""
@@ -170,19 +177,19 @@ def build_message(scan: dict, top_n: int = 8) -> str:
                 f"{g_emoji} <b>[{_esc(grade)}] {_esc(sym)}</b>"
                 f"  <code>{int(score)}/100</code>"
             )
-            # Row 2: price + change
-            row2 = f"   {_esc(_fmt_thb(price))}  {_esc(chg24_str)}"
+            # Row 2: price USD + change
+            row2 = f"   {_esc(_fmt_usd(price_usd))}  {_esc(chg24_str)}"
             if chg7d_str:
                 row2 += f"  |  {_esc(chg7d_str)}"
             lines.append(row2)
-            # Row 3: vol + spike + RSI
+            # Row 3: vol spike + RSI
             tech_parts = [p for p in [spike_str, rsi_str] if p]
             if tech_parts:
                 lines.append(f"   {_esc('  |  '.join(tech_parts))}")
-            # Row 4: vol THB + phase
+            # Row 4: vol USD + phase
             row4_parts = []
-            if vol:
-                row4_parts.append(f"Vol {_fmt_vol_thb(vol)}")
+            if vol_usd:
+                row4_parts.append(f"Vol {_fmt_vol_usd(vol_usd)}")
             if phase_str:
                 row4_parts.append(phase_str)
             if row4_parts:
