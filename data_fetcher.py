@@ -370,6 +370,10 @@ def scan_opportunities(
         log.warning("Bitkub API unavailable — switching to CoinGecko fallback...")
         return _scan_fallback_coingecko(btc_regime, btc_chg, top_n)
 
+    # THB/USD rate จาก USDT pair บน Bitkub (fallback 33.5 ถ้าไม่มี)
+    _usdt_ticker = tickers.get("THB_USDT", {})
+    usdt_thb_rate = float(_usdt_ticker.get("last", 0)) or 33.5
+
     candidates = []
     for key, ticker in tickers.items():
         if not key.startswith("THB_"):
@@ -395,6 +399,7 @@ def scan_opportunities(
         candidates.append({
             "symbol":        symbol,
             "price_thb":     round(last, 8),
+            "price_usd":     round(last / usdt_thb_rate, 8),
             "change_24h_pct": round(pct_chg, 2),
             "volume_thb":    round(vol_thb, 2),
             "high_24h_thb":  round(high_24h, 8),
