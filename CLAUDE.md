@@ -4,17 +4,17 @@
 
 ## Overview
 
-CRYPTO OPPORTUNITY SCANNER — Risk Lover Mode
-- Style: มองหา momentum plays, pre-breakout setups, asymmetric upside
+CRYPTO OPPORTUNITY SCANNER — Balanced Analysis Mode
+- Style: วิเคราะห์ทั้ง bull และ bear scenarios เท่ากัน, data-driven targets
 - Data sources: Binance (primary) + **Bitkub** (THB price, free) + CoinGecko (fallback)
-- Analysis: 3-tier fallback (Claude → Groq → Technical Rules)
+- Analysis: 3-tier fallback (Claude → Groq → Technical Rules) + Reconciliation Gate
 - Output: console summary + JSON ใน `output/`
 
 ---
 
 ## Commands
 
-### 🚀 Opportunity Scanner (ใหม่!)
+### 🚀 Opportunity Scanner
 
 ```bash
 # สแกน Bitkub ทั้งหมด หาเหรียญ hot opportunity
@@ -55,6 +55,12 @@ python analyzer.py --symbol ETH --fetch
 python analyzer.py --symbol SOL --fetch
 ```
 
+### Calibration (ครั้งแรก และ refresh ทุก 7 วัน)
+
+```bash
+python calibration.py
+```
+
 ---
 
 ## ข้อมูลที่ได้จาก data_fetcher
@@ -64,16 +70,17 @@ python analyzer.py --symbol SOL --fetch
 | Price | Current, 24h High/Low, % change | Binance |
 | Volume 24h | USDT + base asset volume | Binance |
 | RSI(14) daily | จากราคาปิดรายวัน 100 bars | คำนวณ |
-| RSI(14) 4h | intraday momentum | คำนวณ (ใหม่) |
+| RSI(14) 4h | intraday momentum | คำนวณ |
 | MA7/MA25/MA99 | 7/25/99-day moving averages | คำนวณ |
-| ATR(14) | สำหรับ stop loss calculation | คำนวณ |
-| Volume Spike | ratio เทียบกับ avg 14 วัน | คำนวณ (ใหม่) |
+| ATR(14) | สำหรับ target/invalidation calculation | คำนวณ |
+| Volume Spike | ratio เทียบกับ avg 14 วัน | คำนวณ |
 | Price Structure | Phase + volume trend (จาก OHLCV) | คำนวณ |
+| Neutral Score | market structure score [-1,+1] | คำนวณ |
 | Market Cap | USD value | CoinGecko |
 | 7d change | % เปลี่ยนแปลง 7 วัน | CoinGecko |
-| Bitkub THB price | ราคา THB + volume | **Bitkub API** (ใหม่) |
-| Opportunity Score | 0-100 composite score | คำนวณ (ใหม่) |
-| Opportunity Grade | S/A/B/C/D | คำนวณ (ใหม่) |
+| Bitkub THB price | ราคา THB + volume | **Bitkub API** |
+| Opportunity Score | 0-100 composite score | คำนวณ |
+| Opportunity Grade | S/A/B/C/D | คำนวณ |
 
 ### Price Structure Phases
 - `TIGHT_RANGE_HIGHER_LOWS` — Pre-breakout setup (สัญญาณ bullish)
@@ -110,12 +117,14 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 
 ---
 
-## Risk/Reward (Risk Lover Mode)
+## Risk/Reward (Calibrated ATR)
 
-- Stop Loss: 1.5× ATR (tight)
-- TP1 (50%): 3× ATR
-- TP2 (30%): 6× ATR
-- TP3/Moon (20%): 10× ATR
+Target และ Stop คำนวณจาก calibration_data.json (grid search จาก historical data):
+- **Target** : Entry + k × ATR(14)  — k มาจาก calibration (default 2.5)
+- **Invalidation** : Entry − j × ATR(14)  — j มาจาก calibration (default 1.5)
+- R:R = k/j (ถ้า < 1.5 → signal = neutral, รอ setup ที่ดีกว่า)
+
+รัน `python calibration.py` เพื่ออัพเดท k/j จาก historical hit rate จริง
 
 ---
 
@@ -123,12 +132,14 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 
 **ขั้นตอนมาตรฐาน:**
 
-1. รัน `python scanner.py` เพื่อหา opportunity จาก Bitkub ทั้งหมด
-2. ถ้า BTC regime = RISK_OFF → แจ้ง user ว่าตลาดอันตราย
-3. รัน `python analyzer.py --symbol <SYMBOL> --fetch` เพื่อวิเคราะห์เชิงลึก
-4. อ่าน `output/<SYMBOL>.json` และ `output/<SYMBOL>_analysis.json` แล้ว **แสดงผลใน chat โดยใช้ format ด้านล่างทุกครั้ง** (ใส่ใน code block เพื่อให้ unicode ขึ้นสวย)
+1. ตรวจ `output/calibration_data.json` — ถ้าไม่มี รัน `python calibration.py` ก่อน (~2 นาที)
+2. รัน `python scanner.py` เพื่อหา opportunity จาก Bitkub ทั้งหมด
+3. ถ้า BTC regime = RISK_OFF → แจ้ง user ว่าตลาดอันตราย
+4. รัน `python analyzer.py --symbol <SYMBOL> --fetch` เพื่อวิเคราะห์เชิงลึก
+5. อ่าน `output/<SYMBOL>.json` และ `output/<SYMBOL>_analysis.json` แล้ว **แสดงผลใน chat โดยใช้ format ด้านล่างทุกครั้ง** (ใส่ใน code block)
 
 > **สำคัญ:** User ใช้ผ่าน chat ไม่ได้เห็น terminal output — ต้อง print combined format ใน chat response เสมอ ห้ามแค่สรุปสั้นๆ
+> ดึงข้อมูลจาก `result["analysis"]` (pre-formatted string) เป็นหลัก — แสดงตามที่ analyzer สร้างมาได้เลย
 
 ### Combined Chat Format (ใช้ทุกครั้งที่วิเคราะห์เหรียญ)
 
@@ -151,24 +162,23 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
    MA25       : ${ma25} {ma25_check}  |  MA99: ${ma99} {ma99_check}
    ATR(14)    : ${atr_14}
    Phase      : {phase}
-   Vol Trend  : {volume_trend}
+   Neutral Score: {neutral_score} {ns_label}
 
 ────────────────────────────────────────────────────────────
 📋 คำแนะนำการเทรด:
-   สัญญาณ    : {signal} {signal_emoji}
-   Entry      : ${entry_price}
-   Stop Loss  : ${sl}  (-{sl_pct}%)
-   TP1        : ${tp1}  (+{tp1_pct}%)  ← เป้าแรก ทำกำไรบางส่วน
-   TP2        : ${tp2}  (+{tp2_pct}%)  ← เป้าหลัก
-   TP3        : ${tp3}  (+{tp3_pct}%)  ← moon target
-   R/R Ratio  : 1:{rr}
-   แนวรับ     : ${support}  —  แนวต้าน: ${resistance}
-   จังหวะเข้า : {entry_timing}
+   สัญญาณ      : {signal} {signal_emoji}
+   Entry        : ${entry_price}
+   Target       : ${target}  ({target_pct:+}%)  ↑/↓
+   Invalidation : ${inval}   ({inval_pct}%)
+   R/R Ratio    : 1:{rr}
+   แนวรับ       : ${support}  —  แนวต้าน: ${resistance}
+   จังหวะเข้า   : {entry_timing}
 
 ────────────────────────────────────────────────────────────
-💡 ประมาณการ (horizon: {horizon_label}):
-   คาดว่าจะ{direction}      : {expected_pct}%  ใน {horizon_days} วัน
-🏆 คะแนนความคุ้มค่า: {composite}/100 — {label}  |  ความแม่นยำ: ~{accuracy_pct}%
+💡 ช่วงคาด 2σ (horizon: {horizon_label}):
+   ช่วงที่คาด        : {lower_pct}% ถึง {upper_pct}%  ใน {horizon_days} วัน
+   ความแม่นยำทิศทาง  : ~{accuracy_pct}%
+🏆 คะแนนความคุ้มค่า: {composite}/100 — {label}
 
 ────────────────────────────────────────────────────────────
 ⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):
@@ -181,7 +191,20 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 
 ────────────────────────────────────────────────────────────
 🧠 AI Analysis ({tier_name}):
-{ai_analysis_text}
+📈 Bull case ({bull_pct}%): {bull_thesis}
+   • {bull_evidence_1}
+📉 Bear case ({bear_pct}%): {bear_thesis}
+   • {bear_evidence_1}
+⚖️  Base case ({base_pct}%): {base_thesis}
+🎯 Direction: {direction_display}  |  Confidence: {confidence_pct}%
+   Target: ${ai_target}  |  Invalidation: ${ai_inval}
+💬 {reasoning}
+
+────────────────────────────────────────────────────────────
+🔀 RECONCILIATION:
+   AI Direction  : {ai_direction}  (confidence {confidence_pct}%)
+   Neutral Score : {neutral_score}  {ns_label}
+   Final Signal  : {final_signal_display}
 ════════════════════════════════════════════════════════════
 ⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น
 ````
@@ -191,10 +214,17 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 - `grade_bar`: S=🔥🔥🔥 / A=⚡⚡ / B=📈 / C=👀 / D=😴
 - `rsi_flag`: >78=⚠️ Overbought / 50-68=🔥 Momentum zone / <35=📉 Oversold
 - `spike_flag`: ≥2=🔥 SPIKE! / ≥1.3=↑ elevated
-- `signal_emoji`: BUY=🟢 / SELL=🔴 / HOLD=🟡
+- `signal_emoji`: BUY=🟢 / SELL=🔴 / HOLD=🟡 / VETO HOLD=🔴🔴
 - `ma_check`: above=✅ / below=❌
+- `ns_label`: >0.1=📈 bullish / <-0.1=📉 bearish / else=⚖️ neutral
+- `final_signal_display`:
+  - LONG/SHORT ปกติ = ✅ {direction}
+  - HOLD (vetoed) = 🔴 HOLD — {reason}
+  - Confidence ลดลง = ⚠️ {direction} (confidence ลดลง จาก structure ขัดแย้ง)
 - ถ้าไม่มี `accuracy_pct` → แสดง "รัน python backtest.py ก่อน"
+- ถ้า Tier 3 (ไม่มี AI) → ข้ามส่วน 🧠 AI Analysis และ 🔀 Reconciliation
 - ถ้าไม่มี timing block → ข้ามส่วน ⏰ ทั้งบล็อก
+- **สำคัญ**: แสดง `result["analysis"]` field ตรงๆ ก่อน แล้วเสริมข้อมูลจาก JSON fields อื่น
 
 **ตัวอย่างคำถามที่รองรับ:**
 - "หาเหรียญน่าเล่นวันนี้" → `python scanner.py --analyze`
@@ -218,9 +248,31 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 ## Output Files
 
 - `output/<SYMBOL>.json` — ข้อมูลดิบ + Bitkub THB price + opportunity score
-- `output/<SYMBOL>_analysis.json` — ผลวิเคราะห์ + tier ที่ใช้
+- `output/<SYMBOL>_analysis.json` — ผลวิเคราะห์ + tier ที่ใช้ + forecast range + neutral_score
 - `output/market_overview.json` — ภาพรวมตลาด
 - `output/opportunity_scan.json` — ผลสแกน Bitkub ทั้งหมด
+- `output/calibration_data.json` — ATR multipliers + sigma ต่อเหรียญ (refresh ทุก 7 วัน)
+- `output/veto_log.jsonl` — log ทุก veto event และ confidence reduction
+
+### โครงสร้าง analysis JSON ใหม่ (หลัง refactor)
+
+```json
+{
+  "symbol": "BTC",
+  "tier_used": "Tier 2 — Groq ...",
+  "analysis": "<pre-formatted string ทั้งหมด — แสดงตรงๆ ได้เลย>",
+  "forecast": {
+    "expected_pct": 4.3,
+    "upper_pct": 4.3,
+    "lower_pct": -4.3,
+    "horizon_days": 3,
+    "accuracy_pct": 18.5,
+    "mode": "new"
+  },
+  "neutral_score": 0.42,
+  "data_snapshot": { ... }
+}
+```
 
 ---
 
@@ -240,6 +292,9 @@ Score คำนวณจาก: momentum 24h/7d (40pts) + volume spike (25pts) +
 pip install -r requirements.txt
 cp .env.example .env
 # แก้ไข .env ใส่ GROQ_API_KEY (ฟรี) หรือ ANTHROPIC_API_KEY
+
+# สร้าง calibration data (ครั้งแรก — ต้องทำก่อนวิเคราะห์)
+python calibration.py
 ```
 
 ---
@@ -251,3 +306,4 @@ cp .env.example .env
 - CoinGecko free tier: 30 requests/min
 - Opportunity score คำนวณจาก technical เท่านั้น ไม่รวม news/sentiment
 - Tier 3 ไม่รู้เรื่อง news, listings, partnerships
+- calibration_data.json ต้องมีก่อนถึงจะใช้ symmetric forecast และ ATR calibration ได้เต็มที่

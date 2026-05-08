@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-29T19:50:32.520241+00:00",
+  "timestamp": "2026-05-07T15:50:32.432666+00:00",
   "symbols_tested": [
     "BTC",
     "ETH",
@@ -37,153 +37,157 @@
     "PEPE",
     "SHIB"
   ],
-  "total_setups": 13160,
-  "overall_accuracy": 15.6,
-  "fixed_horizon": 3,
+  "total_setups": 12775,
+  "overall_accuracy": 14.9,
+  "fixed_horizon": null,
   "atr_win_multiplier": 1.0,
   "aggregates": {
     "by_grade": {
+      "C": {
+        "win_rate": 16.9,
+        "n": 958
+      },
       "D": {
-        "win_rate": 15.3,
-        "n": 3237
+        "win_rate": 13.6,
+        "n": 2801
       },
       "D+": {
-        "win_rate": 14.6,
-        "n": 1114
+        "win_rate": 13.3,
+        "n": 1036
       },
       "B": {
-        "win_rate": 21.4,
-        "n": 374
-      },
-      "C": {
-        "win_rate": 17.3,
-        "n": 1015
+        "win_rate": 16.7,
+        "n": 377
       },
       "C+": {
-        "win_rate": 26.3,
-        "n": 482
+        "win_rate": 22.7,
+        "n": 463
       },
       "F": {
-        "win_rate": 14.3,
-        "n": 6723
-      },
-      "B+": {
-        "win_rate": 20.9,
-        "n": 158
+        "win_rate": 14.6,
+        "n": 6902
       },
       "A": {
-        "win_rate": 24.6,
-        "n": 57
+        "win_rate": 15.9,
+        "n": 69
+      },
+      "B+": {
+        "win_rate": 21.3,
+        "n": 169
       }
     },
     "by_phase": {
-      "CONSOLIDATING_FLAT": {
-        "win_rate": 18.8,
-        "n": 2420
+      "UPTREND_PULLBACK": {
+        "win_rate": 16.3,
+        "n": 1249
       },
       "CONSOLIDATING_HIGHER_LOWS": {
-        "win_rate": 23.3,
-        "n": 683
-      },
-      "UPTREND_PULLBACK": {
-        "win_rate": 18.9,
-        "n": 1315
+        "win_rate": 22.1,
+        "n": 648
       },
       "TIGHT_RANGE_HIGHER_LOWS": {
-        "win_rate": 24.2,
-        "n": 790
+        "win_rate": 18.7,
+        "n": 771
+      },
+      "CONSOLIDATING_FLAT": {
+        "win_rate": 22.6,
+        "n": 2357
       },
       "VOLATILE_NO_STRUCTURE": {
-        "win_rate": 12.5,
-        "n": 7952
+        "win_rate": 11.4,
+        "n": 7750
       }
     },
     "by_rsi_zone": {
-      "recovering": {
-        "win_rate": 13.2,
-        "n": 4561
-      },
-      "momentum": {
-        "win_rate": 18.2,
-        "n": 4084
+      "hot": {
+        "win_rate": 15.2,
+        "n": 1047
       },
       "overbought": {
-        "win_rate": 21.7,
-        "n": 479
+        "win_rate": 16.7,
+        "n": 467
       },
-      "hot": {
-        "win_rate": 18.0,
-        "n": 1083
+      "momentum": {
+        "win_rate": 17.4,
+        "n": 3902
+      },
+      "recovering": {
+        "win_rate": 13.5,
+        "n": 4437
       },
       "oversold": {
-        "win_rate": 13.7,
-        "n": 2953
+        "win_rate": 13.1,
+        "n": 2922
       }
     },
     "by_vol_spike": {
       "<1.2x": {
-        "win_rate": 14.5,
-        "n": 9677
-      },
-      "1.5-2x": {
-        "win_rate": 19.9,
-        "n": 1077
+        "win_rate": 14.7,
+        "n": 9336
       },
       "1.2-1.5x": {
-        "win_rate": 15.4,
-        "n": 1587
+        "win_rate": 14.6,
+        "n": 1566
       },
       "2-3x": {
-        "win_rate": 20.6,
-        "n": 582
+        "win_rate": 10.6,
+        "n": 576
+      },
+      "1.5-2x": {
+        "win_rate": 19.4,
+        "n": 1064
       },
       "3x+": {
-        "win_rate": 30.4,
-        "n": 237
+        "win_rate": 15.9,
+        "n": 233
       }
     },
     "by_ma_align": {
-      "ma25_only": {
-        "win_rate": 18.5,
-        "n": 2308
-      },
       "both": {
-        "win_rate": 17.3,
-        "n": 2954
+        "win_rate": 16.4,
+        "n": 2912
       },
       "ma99_only": {
-        "win_rate": 14.2,
-        "n": 1197
+        "win_rate": 13.4,
+        "n": 1189
       },
       "neither": {
-        "win_rate": 14.1,
-        "n": 6701
+        "win_rate": 13.8,
+        "n": 6527
+      },
+      "ma25_only": {
+        "win_rate": 17.0,
+        "n": 2147
       }
     },
     "by_score_range": {
-      "30-39": {
-        "win_rate": 14.9,
-        "n": 4033
+      "50-59": {
+        "win_rate": 18.8,
+        "n": 1421
       },
       "40-49": {
-        "win_rate": 15.0,
-        "n": 2750
+        "win_rate": 13.8,
+        "n": 2506
+      },
+      "30-39": {
+        "win_rate": 13.8,
+        "n": 3265
       },
       "60-69": {
-        "win_rate": 21.2,
-        "n": 532
-      },
-      "50-59": {
-        "win_rate": 20.2,
-        "n": 1497
+        "win_rate": 18.1,
+        "n": 546
       },
       "20-29": {
-        "win_rate": 14.1,
-        "n": 4291
+        "win_rate": 14.7,
+        "n": 4959
       },
       "70-79": {
-        "win_rate": 24.6,
-        "n": 57
+        "win_rate": 16.2,
+        "n": 68
+      },
+      "10-19": {
+        "win_rate": 22.2,
+        "n": 9
       }
     }
   }

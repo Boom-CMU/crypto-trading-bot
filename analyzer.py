@@ -31,11 +31,32 @@ from data_fetcher import (
 try:
     from backtest import (
         lookup_confidence, _rsi_zone, _vol_spike_band, _ma_align_label,
-        calc_expected_pct, estimate_horizon,
+        calc_expected_pct, _calc_expected_pct_legacy, estimate_horizon,
     )
     _BACKTEST_AVAILABLE = True
 except ImportError:
     _BACKTEST_AVAILABLE = False
+
+try:
+    from calibration import apply_isotonic as _apply_isotonic
+    _CALIBRATION_APPLY_AVAILABLE = True
+except ImportError:
+    _CALIBRATION_APPLY_AVAILABLE = False
+    def _apply_isotonic(raw_prob: float, calib: dict) -> float:  # type: ignore[misc]
+        """Fallback linear shrinkage when calibration module unavailable."""
+        return 0.5 + (raw_prob - 0.5) * 0.6
+
+try:
+    from neutral_score import compute_neutral_score as _compute_neutral_score_fn
+    _NEUTRAL_SCORE_AVAILABLE = True
+except ImportError:
+    _NEUTRAL_SCORE_AVAILABLE = False
+
+try:
+    from reconciliation import reconcile as _reconcile, format_reconcile_section
+    _RECONCILIATION_AVAILABLE = True
+except ImportError:
+    _RECONCILIATION_AVAILABLE = False
 
 try:
     from trading_time import (
@@ -52,6 +73,83 @@ log = logging.getLogger(__name__)
 # ตั้งค่า horizon และ timeframe จาก CLI — ทั้ง 3 tier ใช้ค่านี้ร่วมกัน
 _current_horizon: int | None = None
 _current_timeframe: str | None = None   # "scalp" | "swing" | "position" | ...
+
+# ─────────────────────────────────────────────────────────────
+#  Neutral AI system prompt (Task 4)
+#  Replaces all bullish-first prompts. Both tiers share this constant.
+# ─────────────────────────────────────────────────────────────
+AI_SYSTEM_PROMPT_NEUTRAL = (
+    "You are a neutral crypto market analyst. Your only loyalty is to accuracy.\n\n"
+    "For every setup, you MUST analyze both bull AND bear scenarios with equal rigor "
+    "BEFORE choosing a direction.\n\n"
+    "You MUST respond with valid JSON matching this schema exactly:\n"
+    "{\n"
+    '  "bull_case":  {"thesis": str, "key_evidence": [str], "probability": float},\n'
+    '  "bear_case":  {"thesis": str, "key_evidence": [str], "probability": float},\n'
+    '  "base_case":  {"thesis": str, "probability": float},\n'
+    '  "direction":  "long" | "short" | "neutral",\n'
+    '  "invalidation_price": float,\n'
+    '  "target_price": float,\n'
+    '  "confidence": float,\n'
+    '  "reasoning":  str\n'
+    "}\n\n"
+    "HARD CONSTRAINTS — response will be rejected and retried if violated:\n"
+    "1. bull_case.probability + bear_case.probability + base_case.probability == 1.0 (±0.01)\n"
+    "2. direction must match the highest-probability case "
+    "(bull→long, bear→short, base→neutral)\n"
+    "3. invalidation_price must be on the opposite side of current price from target_price\n"
+    "4. confidence must not exceed max(bull, bear, base) probability\n"
+    "5. If you cannot find concrete evidence for BOTH bull and bear, "
+    "return direction='neutral'\n\n"
+    "ใส่ข้อความใน reasoning และ thesis เป็นภาษาไทย\n"
+    "In key_evidence, provide qualitative pattern descriptions — "
+    "do NOT simply list indicator price values already shown in the data "
+    "(e.g., write 'price above all MAs — bull structure' not 'MA25: $0.039').\n"
+    "Return ONLY the JSON object — no markdown, no extra text."
+)
+
+# Returned when all retries exhausted or AI unavailable
+_FALLBACK_NEUTRAL_RESPONSE: dict = {
+    "bull_case":  {"thesis": "ไม่มีข้อมูลเพียงพอ", "key_evidence": [], "probability": 0.33},
+    "bear_case":  {"thesis": "ไม่มีข้อมูลเพียงพอ", "key_evidence": [], "probability": 0.33},
+    "base_case":  {"thesis": "AI validation failed — defaulting to neutral", "probability": 0.34},
+    "direction":  "neutral",
+    "invalidation_price": 0.0,
+    "target_price": 0.0,
+    "confidence": 0.33,
+    "reasoning":  "ไม่สามารถวิเคราะห์ได้ — ระบบ fallback เป็น neutral",
+}
+
+
+# ─────────────────────────────────────────────────────────────
+#  Neutral score helper (Task 7 — feeds reconciliation gate)
+# ─────────────────────────────────────────────────────────────
+
+def _get_neutral_score(data: dict) -> float:
+    """
+    Fetch recent daily klines for the symbol and compute neutral structure
+    score in [-1, +1].  Returns 0.0 on any error so gate is never blocked
+    by a connectivity issue.
+    """
+    if not _NEUTRAL_SCORE_AVAILABLE:
+        return 0.0
+    try:
+        sym   = data.get("symbol", "BTC")
+        pair, _ = _normalize_symbol(sym)
+        klines  = _binance_get("/klines", {"symbol": pair, "interval": "1d", "limit": 100})
+        if not klines:
+            return 0.0
+        ohlcv = {
+            "close":  [float(k[4]) for k in klines],
+            "high":   [float(k[2]) for k in klines],
+            "low":    [float(k[3]) for k in klines],
+            "volume": [float(k[5]) for k in klines],
+        }
+        return float(_compute_neutral_score_fn(ohlcv).get("score", 0.0))
+    except Exception as e:
+        log.warning("neutral_score fetch failed for %s: %s",
+                    data.get("symbol", "?"), e)
+        return 0.0
 
 
 # ─────────────────────────────────────────────────────────────
@@ -77,6 +175,14 @@ def _build_prompt(data: dict, expected_pct: float | None = None, horizon: int = 
         bitkub_str = f"✅ มีใน Bitkub — ราคา ฿{bk.get('price_thb', 0):,.4f} THB"
     else:
         bitkub_str = "❌ ไม่มีใน Bitkub — ต้องซื้อผ่าน Binance/exchange อื่น"
+
+    # Format forecast for prompt (handles both legacy float and new range dict)
+    if isinstance(expected_pct, dict):
+        forecast_str = f"ช่วงคาด {expected_pct.get('lower', 0):+.1f}% ถึง {expected_pct.get('upper', 0):+.1f}%"
+    elif expected_pct is not None:
+        forecast_str = f"{'ขึ้น' if expected_pct >= 0 else 'ลง'} {expected_pct:+.1f}%"
+    else:
+        forecast_str = "N/A"
 
     prompt = f"""🚀 OPPORTUNITY SCAN: {sym}/USDT
 
@@ -107,26 +213,18 @@ Range       : {struct.get('range_pct', 'N/A')}%
 Higher Lows : {struct.get('higher_lows', 'N/A')}
 Volume Trend: {struct.get('volume_trend', 'N/A')}
 
-=== MOMENTUM FORECAST ===
-ระบบประมาณการจาก momentum indicators:
-คาดว่าจะ{'ขึ้น' if (expected_pct or 0) >= 0 else 'ลง'}: {f'{expected_pct:+.1f}%' if expected_pct is not None else 'N/A'} ใน {horizon} วัน
-ความแม่นยำของการพยากรณ์นี้ (จาก backtest): {f'~{confidence:.0f}%' if confidence is not None else 'ยังไม่มีข้อมูล'}
+=== VOLATILITY FORECAST ===
+ช่วงราคาที่คาดในอีก {horizon} วัน (จาก realized vol): {forecast_str}
+ความแม่นยำทิศทาง (จาก backtest): {f'~{confidence:.0f}%' if confidence is not None else 'ยังไม่มีข้อมูล'}
 
-=== ALPHA HUNT MISSION ===
-วิเคราะห์ในฐานะ RISK-ON opportunity hunter:
+=== ANALYSIS REQUEST ===
+Grade ปัจจุบัน: [{opp_grade}] score {opp_score}/100
+ราคาปัจจุบัน: ${p.get('current', 0)} (ใช้เป็น reference สำหรับ target_price / invalidation_price)
+Bitkub: {bitkub_str}
+Forecast ช่วง: {forecast_str} ใน {horizon} วัน (ความแม่นยำทิศทาง: {f'~{confidence:.0f}%' if confidence is not None else '?'})
 
-1. 🎯 Opportunity Grade [{opp_grade}] — อธิบาย thesis ว่าทำไมถึงน่าสนใจ (หรือไม่)
-2. 📈 Bull Scenario — อะไรคือ catalyst? ถ้า setup นี้ fire จะไปได้ถึงไหน?
-3. ⚡ Entry Strategy:
-   - Entry zone + volume confirmation ที่ต้องเห็น
-   - Timing: ควรเข้าเลยหรือรอ pullback?
-4. 🎯 Multi-Target Exit: SL/TP1/TP2/TP3 + เหตุผล
-5. ☠️ Invalidation — อะไรจะ kill setup นี้?
-6. 🇹🇭 Platform: {bitkub_str}
-7. 📊 Forecast: ระบุ forecast ({f'{expected_pct:+.1f}%' if expected_pct is not None else 'N/A'} ใน {horizon} วัน, ความแม่นยำ {f'~{confidence:.0f}%' if confidence is not None else '?'}) ว่าสอดคล้องกับ analysis ไหม
-8. ⚡ VERDICT: FIRE 🔥 / WATCH 👀 / PASS ❌ + เหตุผล 1 ประโยค
-
-ตอบภาษาไทย กระชับ เน้น actionable — ใส่ตัวเลขทุกจุด
+วิเคราะห์ข้อมูลข้างต้นและตอบเป็น JSON schema ที่กำหนดไว้ใน system prompt
+ทั้ง bull_case และ bear_case ต้องมีหลักฐานจาก indicators จริงที่แสดงด้านบน
 """
     return prompt
 
@@ -204,14 +302,18 @@ def _get_setup_confidence(data: dict) -> float | None:
     )
 
 
-def _calc_expected_and_horizon(data: dict, user_horizon: int | None = None) -> tuple[float | None, int, str]:
+def _calc_expected_and_horizon(data: dict, user_horizon: int | None = None) -> tuple:
     """
-    คำนวณ expected % change และ horizon สำหรับเหรียญนี้
-    Returns: (expected_pct, horizon, horizon_source)
-    horizon_source = "user" หรือ "auto"
+    คำนวณ expected range/pct และ horizon สำหรับเหรียญนี้
+    Returns: (expected, horizon, horizon_source)
+      Legacy mode : expected = float (single point estimate, %)
+      New mode    : expected = {"upper": float, "lower": float} (%, symmetric range)
+    horizon_source = "user" | "auto"
     """
     if not _BACKTEST_AVAILABLE:
         return None, 7, "auto"
+
+    from config import USE_LEGACY_FORECASTER
 
     tech      = data.get("technicals", {})
     p         = data.get("price", {})
@@ -219,8 +321,10 @@ def _calc_expected_and_horizon(data: dict, user_horizon: int | None = None) -> t
     chg_24h   = p.get("change_24h_pct", 0) or 0
     chg_7d    = mkt.get("change_7d_pct", 0) or 0
     rsi_4h    = tech.get("rsi_14_4h")
+    rsi_14    = tech.get("rsi_14")
     vol_spike = tech.get("volume_spike", 1.0) or 1.0
     phase     = tech.get("price_structure", {}).get("phase", "UNKNOWN")
+    symbol    = data.get("symbol", "UNKNOWN")
 
     if user_horizon:
         horizon        = user_horizon
@@ -229,7 +333,30 @@ def _calc_expected_and_horizon(data: dict, user_horizon: int | None = None) -> t
         horizon        = estimate_horizon(phase, vol_spike)
         horizon_source = "auto"
 
-    expected = calc_expected_pct(chg_24h, chg_7d, rsi_4h, vol_spike, horizon)
+    if USE_LEGACY_FORECASTER:
+        expected = _calc_expected_pct_legacy(chg_24h, chg_7d, rsi_4h, vol_spike, horizon)
+        return expected, horizon, horizon_source
+
+    # New mode: load calibration (file must already exist from Task 1a run)
+    try:
+        from calibration import CALIBRATION_FILE, load_calibration
+        import os as _os
+        if _os.path.exists(CALIBRATION_FILE):
+            import json as _json
+            with open(CALIBRATION_FILE, encoding="utf-8") as _f:
+                _calib = _json.load(_f)
+        else:
+            _calib = None
+    except Exception:
+        _calib = None
+
+    if _calib is None:
+        # Calibration file not yet generated — fall back silently
+        expected = _calc_expected_pct_legacy(chg_24h, chg_7d, rsi_4h, vol_spike, horizon)
+        return expected, horizon, horizon_source
+
+    rsi_for_range = rsi_14 if rsi_14 is not None else rsi_4h
+    expected = calc_expected_pct(symbol, horizon, rsi_for_range, chg_24h / 100.0, _calib)
     return expected, horizon, horizon_source
 
 
@@ -408,6 +535,94 @@ def _risk_vol_score(data: dict) -> float:
 
 
 # ─────────────────────────────────────────────────────────────
+#  Calibration loader for targets (module-level cache, no rebuild)
+# ─────────────────────────────────────────────────────────────
+_TARGETS_CALIBRATION: dict | None = None
+
+def _get_calibration_for_targets() -> dict:
+    """Load calibration once per session without triggering a rebuild."""
+    global _TARGETS_CALIBRATION
+    if _TARGETS_CALIBRATION is not None:
+        return _TARGETS_CALIBRATION
+    try:
+        from calibration import CALIBRATION_FILE
+        import json as _json
+        if os.path.exists(CALIBRATION_FILE):
+            with open(CALIBRATION_FILE, encoding="utf-8") as _f:
+                _TARGETS_CALIBRATION = _json.load(_f)
+                return _TARGETS_CALIBRATION
+    except Exception:
+        pass
+    _TARGETS_CALIBRATION = {"atr_multipliers": {"target": 2.5, "stop": 1.5}, "per_coin": {}}
+    return _TARGETS_CALIBRATION
+
+
+def _signal_to_direction(signal: str) -> str:
+    """Map composite signal string to long/short/neutral for target computation."""
+    if signal in ("Strong Buy", "Buy"):
+        return "long"
+    if signal in ("Strong Sell", "Sell"):
+        return "short"
+    return "neutral"
+
+
+def _calc_targets_new(data: dict, direction: str, calibration: dict) -> dict:
+    """
+    ATR-based single target + invalidation (Task 5).
+    Uses calibration ATR multipliers; applies sanity cap if live ATR is anomalous.
+    Returns dict with action="neutral" + reason if R:R < 1.5.
+    No hardcoded timeframe labels.
+    """
+    p      = data.get("price", {})
+    tech   = data.get("technicals", {})
+    symbol = data.get("symbol", "UNKNOWN").upper()
+    entry  = float(p.get("current", 0) or 0)
+
+    live_atr = float(tech.get("atr_14") or entry * 0.03)
+
+    # Sanity cap: prevent anomalous bars from blowing out targets
+    calib_atr = calibration.get("per_coin", {}).get(symbol, {}).get("atr_14_avg")
+    if calib_atr and live_atr > 3.0 * calib_atr:
+        log.warning("ATR sanity cap %s: live=%.4f > 3×calib=%.4f — capping",
+                    symbol, live_atr, calib_atr)
+        live_atr = calib_atr * 3.0
+
+    k = float(calibration.get("atr_multipliers", {}).get("target", 2.5))
+    j = float(calibration.get("atr_multipliers", {}).get("stop",   1.5))
+
+    if direction == "short":
+        target = entry - k * live_atr
+        inval  = entry + j * live_atr
+    else:   # "long" or "neutral" — default bullish side for display
+        target = entry + k * live_atr
+        inval  = entry - j * live_atr
+
+    reward = abs(target - entry)
+    risk   = abs(inval  - entry)
+    rr     = round(reward / risk, 1) if risk > 0 else 0.0
+
+    def pct(t: float) -> float:
+        return round((t - entry) / entry * 100, 1) if entry > 0 else 0.0
+
+    base = {
+        "entry":      entry,
+        "target":     round(target, 8),
+        "target_pct": pct(target),
+        "inval":      round(inval, 8),
+        "inval_pct":  pct(inval),
+        "rr":         rr,
+        "atr":        round(live_atr, 8),
+        "direction":  direction,
+        "k":          k,
+        "j":          j,
+    }
+    if rr < 1.5:
+        return {**base, "action": "neutral",
+                "reason": f"R:R {rr:.1f} < 1.5 — รอ setup ที่ดีกว่า"}
+    return {**base, "action": direction}
+
+
+# ─────────────────────────────────────────────────────────────
 #  Targets + Composite score
 # ─────────────────────────────────────────────────────────────
 def _calc_targets(data: dict) -> dict:
@@ -458,8 +673,23 @@ def _calc_all_scores(data: dict) -> dict:
     tg = _calc_targets(data)
 
     # Probability estimate from momentum + technical strength
-    raw_prob  = m / 10 * 0.6 + t / 10 * 0.4
-    prob_up   = round(min(0.75, max(0.25, 0.30 + raw_prob * 0.40)), 2)
+    raw_prob = m / 10 * 0.6 + t / 10 * 0.4
+
+    from config import USE_LEGACY_FORECASTER
+    if USE_LEGACY_FORECASTER:
+        # Old formula (biased upward — floor 0.30, ceiling 0.75, additive 0.30)
+        prob_up = round(min(0.75, max(0.25, 0.30 + raw_prob * 0.40)), 2)
+    else:
+        # Task 6: symmetric calibrated probability
+        # Constraints: floor/ceiling symmetric around 0.5 (0.15/0.85)
+        #              no additive constant
+        #              raw_prob=0.5 → prob_up=0.5 (guaranteed by apply_isotonic)
+        _calib_pu   = _get_calibration_for_targets()
+        _prob_calib = _calib_pu.get("prob_up_calibration",
+                                    {"method": "linear_scale", "scale": 0.6})
+        _calibrated = _apply_isotonic(raw_prob, _prob_calib)
+        prob_up     = round(min(0.85, max(0.15, _calibrated)), 2)
+
     prob_down = round(1.0 - prob_up, 2)
 
     tp2_pct = tg["tp2_pct"]
@@ -496,10 +726,56 @@ def _calc_all_scores(data: dict) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────
+#  Output consistency validator (General #1)
+# ─────────────────────────────────────────────────────────────
+
+def _validate_output_consistency(
+    targets: dict,
+    timing: dict | None,
+    tech: dict,
+) -> list[str]:
+    """
+    Detect conflicts between target/invalidation, entry type, and urgency.
+    Logs each issue and returns a list of warning strings for display.
+    """
+    issues: list[str] = []
+    rsi_4h = tech.get("rsi_14_4h")
+
+    # RSI 4h overbought vs HIGH urgency (should be caught by trading_time.py fix)
+    if timing is not None and rsi_4h is not None and rsi_4h > 80:
+        if timing.get("urgency") == "HIGH":
+            issues.append(
+                f"RSI 4h={rsi_4h:.1f} overbought conflicts with urgency=HIGH — "
+                "urgency auto-corrected to MEDIUM"
+            )
+
+    # Target and invalidation on same side of entry (invalid R/R geometry)
+    entry  = float(targets.get("entry",  0) or 0)
+    tgt    = float(targets.get("target", 0) or 0)
+    inval  = float(targets.get("inval",  0) or 0)
+    if entry > 0 and tgt != 0 and inval != 0:
+        if (tgt > entry) == (inval > entry):
+            issues.append(
+                f"Target ({tgt:.6f}) and Invalidation ({inval:.6f}) "
+                f"are on the same side of entry ({entry:.6f}) — check ATR calc"
+            )
+
+    # Very low R/R
+    rr = float(targets.get("rr", 0) or 0)
+    if 0 < rr < 1.0:
+        issues.append(f"R/R ratio {rr:.1f} is below 1.0 — setup may be unfavorable")
+
+    for issue in issues:
+        log.warning("Output consistency: %s", issue)
+
+    return issues
+
+
+# ─────────────────────────────────────────────────────────────
 #  Unified trading card (identical format across all tiers)
 # ─────────────────────────────────────────────────────────────
 def _build_forecast_lines(
-    expected_pct: float | None,
+    expected_pct,           # float (legacy) | dict {"upper","lower"} (new) | None
     horizon: int,
     horizon_source: str,
     confidence: float | None,
@@ -508,10 +784,21 @@ def _build_forecast_lines(
     if expected_pct is None or not _BACKTEST_AVAILABLE:
         return [""]
 
-    direction = "ขึ้น" if expected_pct >= 0 else "ลง"
-    hz_label  = f"{horizon} วัน ({'กำหนดเอง' if horizon_source == 'user' else 'auto'})"
-    conf_str  = f"~{confidence:.0f}%" if confidence is not None else "?"
+    hz_label = f"{horizon} วัน ({'กำหนดเอง' if horizon_source == 'user' else 'auto'})"
+    conf_str = f"~{confidence:.0f}%" if confidence is not None else "?"
 
+    if isinstance(expected_pct, dict):
+        upper = expected_pct.get("upper", 0)
+        lower = expected_pct.get("lower", 0)
+        return [
+            "────────────────────────────────────────────────────────────",
+            f"💡 ช่วงคาด 2σ (horizon: {hz_label}):",
+            f"   ช่วงที่คาด        : {lower:+.1f}% ถึง {upper:+.1f}%",
+            f"   ความแม่นยำทิศทาง : {conf_str}",
+        ]
+
+    # Legacy float
+    direction = "ขึ้น" if expected_pct >= 0 else "ลง"
     return [
         "────────────────────────────────────────────────────────────",
         f"💡 ประมาณการ (horizon: {hz_label}):",
@@ -538,7 +825,7 @@ def _format_trading_card(
     mkt    = data.get("market_data", {})
     struct = tech.get("price_structure", {})
 
-    price         = targets["price"]
+    price         = targets.get("price") or targets.get("entry", 0)
     chg_24h       = p.get("change_24h_pct", 0) or 0
     chg_7d        = mkt.get("change_7d_pct", 0) or 0
     vol_24h       = p.get("volume_24h_usdt", 0) or 0
@@ -547,6 +834,16 @@ def _format_trading_card(
     phase         = struct.get("phase", "")
     low_24h       = p.get("low_24h", 0) or 0
     high_24h      = p.get("high_24h", 0) or 0
+
+    rsi_14_val   = tech.get("rsi_14")
+    rsi_4h_val   = tech.get("rsi_14_4h")
+    ma7_val      = tech.get("ma7")
+    ma25_val     = tech.get("ma25")
+    ma99_val     = tech.get("ma99")
+    above_ma25_v = tech.get("above_ma25")
+    above_ma99_v = tech.get("above_ma99")
+    atr_14_val   = tech.get("atr_14")
+    above_ma7_v  = (float(price) > float(ma7_val)) if (price and ma7_val) else None
 
     # Volume vs average string
     vol_vs_pct = round((vol_spike - 1) * 100)
@@ -575,6 +872,23 @@ def _format_trading_card(
     }
     signal_disp = signal_map.get(scores["signal"], scores["signal"])
 
+    # Inline helpers for Technical Indicators block
+    def _rsi_flag_str(r):
+        if r is None: return ""
+        if r > 78:        return "⚠️ Overbought"
+        if 50 <= r <= 68: return "🔥 Momentum zone"
+        if r < 35:        return "📉 Oversold"
+        return ""
+
+    def _ma_chk_str(above):
+        if above is True:  return "✅"
+        if above is False: return "❌"
+        return "—"
+
+    _atr_display = _fmt_price(atr_14_val) if atr_14_val else "N/A"
+    _atr_warning = ("  ⚠️ ATR unavailable — 2σ range estimate may be inaccurate"
+                    if not atr_14_val else "")
+
     # Entry timing advice (quick one-liner for the trade card row)
     if phase == "TIGHT_RANGE_HIGHER_LOWS" and vol_spike >= 2.0:
         entry_timing_str = "เข้าได้เลย — breakout กำลังเกิด (volume ยืนยันแล้ว)"
@@ -591,6 +905,12 @@ def _format_trading_card(
     else:
         entry_timing_str = "รอ ~1-2 ชม. — ยังไม่มี breakout สัญญาณ รอ volume confirm"
 
+    # Fix 6: Detect pullback/retest setups to show dual-entry scenarios
+    _has_pullback_setup = (
+        phase == "UPTREND_PULLBACK"
+        and ("retest" in entry_timing_str or "pullback" in entry_timing_str)
+    )
+
     lines = [
         "════════════════════════════════════════════════════════════",
         f"🚀 {sym}/USDT — วิเคราะห์โดย {tier_name}",
@@ -598,6 +918,22 @@ def _format_trading_card(
         f"💰 ราคา: {_fmt_price(price)}",
         f"   1h: {chg_1h_str}  |  7d: {chg_7d:+.2f}%",
         f"   Volume 24h: {_fmt_vol(vol_24h)}  |  vs Average: {vol_vs_str}",
+        "",
+        "────────────────────────────────────────────────────────────",
+        "📊 Technical Indicators:",
+        (f"   RSI(14)  : {rsi_14_val:.1f}  {_rsi_flag_str(rsi_14_val)}"
+         f"  |  4h RSI: {rsi_4h_val:.1f}  {_rsi_flag_str(rsi_4h_val)}"
+         if rsi_14_val is not None and rsi_4h_val is not None else
+         f"   RSI(14)  : {rsi_14_val if rsi_14_val is not None else 'N/A'}  "
+         f"{_rsi_flag_str(rsi_14_val)}  |  4h RSI: {rsi_4h_val if rsi_4h_val is not None else 'N/A'}  "
+         f"{_rsi_flag_str(rsi_4h_val)}"),
+        (f"   Vol Spike: ×{vol_spike:.2f}  "
+         f"{'🔥 SPIKE!' if vol_spike >= 2.0 else ('↑ elevated' if vol_spike >= 1.3 else '')}"),
+        f"   MA7  : {_fmt_price(ma7_val) if ma7_val else 'N/A'}  {_ma_chk_str(above_ma7_v)}",
+        (f"   MA25 : {_fmt_price(ma25_val) if ma25_val else 'N/A'}  {_ma_chk_str(above_ma25_v)}"
+         f"  |  MA99: {_fmt_price(ma99_val) if ma99_val else 'N/A'}  {_ma_chk_str(above_ma99_v)}"),
+        f"   ATR(14) : {_atr_display}{_atr_warning}",
+        f"   Phase   : {phase or 'N/A'}",
         "",
         "📈 คะแนนย่อย:",
         f"  Momentum        : {scores['momentum']:.1f}/10",
@@ -607,7 +943,7 @@ def _format_trading_card(
         "",
         "🎯 โอกาส:",
         f"  ขึ้น: {round(prob_up * 100):.0f}%  |  ลง: {round(prob_down * 100):.0f}%",
-        f"  ถึง Target {_fmt_price(targets['tp2'])}: +{tp2_pct:.1f}%",
+        f"  ถึง Target {_fmt_price(targets.get('tp2') or targets.get('target', 0))}: +{tp2_pct:.1f}%",
         f"  ATH Distance: {pct_from_high:.1f}%  ← upside ถ้าถึง ATH",
         "",
         f"⚡ Expected Value (Asymmetric): [+{ev_up:.2f}% / -{ev_dn:.2f}%]",
@@ -619,12 +955,32 @@ def _format_trading_card(
         "────────────────────────────────────────────────────────────",
         "📋 คำแนะนำการเทรด:",
         f"  สัญญาณ    : {signal_disp}",
-        f"  Entry      : {_fmt_price(price)}",
-        f"  Stop Loss  : {_fmt_price(targets['sl'])}  (-{targets['sl_pct']:.1f}%) ← ไม่เกิน 15%",
-        f"  TP1        : {_fmt_price(targets['tp1'])}  (+{targets['tp1_pct']:.1f}%) ← {targets['tp1_tf']}",
-        f"  TP2        : {_fmt_price(targets['tp2'])}  (+{targets['tp2_pct']:.1f}%) ← {targets['tp2_tf']}",
-        f"  TP3        : {_fmt_price(targets['tp3'])}  (+{targets['tp3_pct']:.1f}%) ← {targets['tp3_tf']}",
-        f"  R/R Ratio  : 1:{targets['rr']:.1f}",
+        (f"  Entry (A)  : {_fmt_price(price)} ← Market Entry (เข้าทันที)\n"
+         f"  Entry (B)  : {_fmt_price(support)} ← Limit Entry (รอ retest แนวรับ)")
+        if _has_pullback_setup else
+        f"  Entry      : {_fmt_price(price)} ← Market Entry",
+    ]
+
+    # ── target / stop display — new single-target (Task 5) vs legacy ───
+    if "target" in targets:
+        dir_arrow = "↑" if targets.get("direction") == "long" else ("↓" if targets.get("direction") == "short" else "↕")
+        lines += [
+            f"  Target     : {_fmt_price(targets['target'])}  ({targets['target_pct']:+.1f}%)  {dir_arrow}",
+            f"  Invalidation: {_fmt_price(targets['inval'])}  ({targets['inval_pct']:+.1f}%)",
+            f"  R/R Ratio  : 1:{targets['rr']:.1f}",
+        ]
+        if targets.get("action") == "neutral" and targets.get("reason"):
+            lines.append(f"  ⚠️  {targets['reason']}")
+    else:
+        lines += [
+            f"  Stop Loss  : {_fmt_price(targets['sl'])}  (-{targets['sl_pct']:.1f}%) ← ไม่เกิน 15%",
+            f"  TP1        : {_fmt_price(targets['tp1'])}  (+{targets['tp1_pct']:.1f}%) ← {targets['tp1_tf']}",
+            f"  TP2        : {_fmt_price(targets['tp2'])}  (+{targets['tp2_pct']:.1f}%) ← {targets['tp2_tf']}",
+            f"  TP3        : {_fmt_price(targets['tp3'])}  (+{targets['tp3_pct']:.1f}%) ← {targets['tp3_tf']}",
+            f"  R/R Ratio  : 1:{targets['rr']:.1f}",
+        ]
+
+    lines += [
         "  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว",
         f"  แนวรับ     : {_fmt_price(support)}  —  แนวต้าน: {_fmt_price(resistance)}",
         f"  จังหวะเข้า : {entry_timing_str}",
@@ -644,6 +1000,13 @@ def _format_trading_card(
             f"  ระดับเร่งด่วน: {t['urgency_display']}",
             f"  หน้าต่างถัดไป: {t['best_session_short']} {t['next_window_str']}",
         ]
+
+    _issues = _validate_output_consistency(targets, timing, tech)
+    if _issues:
+        lines.append("────────────────────────────────────────────────────────────")
+        lines.append("⚠️ Output Consistency Notices:")
+        for _issue in _issues:
+            lines.append(f"   {_issue}")
 
     lines += [
         "════════════════════════════════════════════════════════════",
@@ -672,11 +1035,15 @@ def _tier3_analysis(data: dict) -> str:
 
     # Compute scores, targets, 1h change
     scores                           = _calc_all_scores(data)
-    targets                          = _calc_targets(data)
     pair, _                          = _normalize_symbol(sym)
     chg_1h                           = _fetch_1h_change(pair)
     confidence                       = _get_setup_confidence(data)
     expected_pct, horizon, hz_source = _calc_expected_and_horizon(data, _current_horizon)
+
+    # Task 5: single ATR-based target using signal direction
+    _calib3  = _get_calibration_for_targets()
+    _dir3    = _signal_to_direction(scores["signal"])
+    targets  = _calc_targets_new(data, _dir3, _calib3)
 
     _timing = None
     if _TIMING_AVAILABLE:
@@ -813,6 +1180,145 @@ def _tier3_analysis(data: dict) -> str:
 
 
 # ─────────────────────────────────────────────────────────────
+#  AI response validation + formatting (Task 4)
+# ─────────────────────────────────────────────────────────────
+
+def _validate_ai_response(resp: dict, current_price: float) -> tuple[bool, str]:
+    """
+    Check 4 hard constraints from the spec.
+    Returns (is_valid, error_message).
+    """
+    # Constraint 1: probabilities sum to 1.0 ±0.01
+    try:
+        p_sum = (resp["bull_case"]["probability"]
+                 + resp["bear_case"]["probability"]
+                 + resp["base_case"]["probability"])
+        if abs(p_sum - 1.0) > 0.01:
+            return False, f"probability sum = {p_sum:.3f} (must be 1.0 ±0.01)"
+    except (KeyError, TypeError) as e:
+        return False, f"missing probability field: {e}"
+
+    # Constraint 2: direction matches highest-probability case
+    try:
+        probs = {
+            "long":    resp["bull_case"]["probability"],
+            "short":   resp["bear_case"]["probability"],
+            "neutral": resp["base_case"]["probability"],
+        }
+        best = max(probs, key=probs.__getitem__)
+        if resp.get("direction") != best:
+            return False, (f"direction='{resp.get('direction')}' but "
+                           f"highest prob is '{best}' ({probs[best]:.2f})")
+    except (KeyError, TypeError) as e:
+        return False, f"direction/probability check failed: {e}"
+
+    # Constraint 3: invalidation_price on opposite side from target_price
+    try:
+        target = float(resp["target_price"])
+        inval  = float(resp["invalidation_price"])
+        if current_price > 0 and target != 0 and inval != 0:
+            if (target > current_price) == (inval > current_price):
+                return False, (f"target={target} and invalidation={inval} "
+                               f"are on same side of price={current_price}")
+    except (KeyError, TypeError, ValueError) as e:
+        return False, f"target/invalidation check failed: {e}"
+
+    # Constraint 4: confidence ≤ max(bull, bear, base) probability
+    try:
+        max_prob   = max(resp["bull_case"]["probability"],
+                         resp["bear_case"]["probability"],
+                         resp["base_case"]["probability"])
+        confidence = float(resp["confidence"])
+        if confidence > max_prob + 0.01:
+            return False, (f"confidence={confidence:.2f} exceeds "
+                           f"max_prob={max_prob:.2f}")
+    except (KeyError, TypeError, ValueError) as e:
+        return False, f"confidence check failed: {e}"
+
+    return True, ""
+
+
+def _parse_ai_json(raw: str) -> dict | None:
+    """Extract and parse JSON from raw AI response (handles markdown code fences)."""
+    import json as _json
+    text = raw.strip()
+    if "```" in text:
+        start = text.find("```")
+        end   = text.rfind("```")
+        inner = text[start + 3:end].strip()
+        if inner.startswith("json"):
+            inner = inner[4:].strip()
+        text = inner
+    # Also handle leading/trailing non-JSON characters
+    brace_start = text.find("{")
+    brace_end   = text.rfind("}")
+    if brace_start != -1 and brace_end != -1:
+        text = text[brace_start:brace_end + 1]
+    try:
+        return _json.loads(text)
+    except (_json.JSONDecodeError, ValueError):
+        return None
+
+
+def _format_ai_analysis(ai_json: dict, tier_name: str) -> str:
+    """Convert validated AI JSON → readable Thai display text."""
+    bull = ai_json.get("bull_case",  {})
+    bear = ai_json.get("bear_case",  {})
+    base = ai_json.get("base_case",  {})
+    dir_ = ai_json.get("direction",  "neutral")
+    conf = ai_json.get("confidence", 0.0)
+    rsn  = ai_json.get("reasoning", "")
+
+    dir_display = {
+        "long":    "🟢 LONG",
+        "short":   "🔴 SHORT",
+        "neutral": "🟡 NEUTRAL",
+    }.get(dir_, dir_.upper())
+
+    bp  = round(bull.get("probability", 0) * 100)
+    brp = round(bear.get("probability", 0) * 100)
+    bap = round(base.get("probability", 0) * 100)
+
+    def _filter_evidence(evs: list) -> list:
+        """Remove raw MA price lines already shown in Technical Indicators."""
+        filtered = []
+        has_ma_note = False
+        for ev in evs:
+            s = ev.strip().upper()
+            is_ma_price = (
+                (s.startswith("MA7") or s.startswith("MA25") or s.startswith("MA99"))
+                and ("$" in ev or "ABOVE" in s or "BELOW" in s)
+            )
+            if is_ma_price:
+                if not has_ma_note:
+                    filtered.append("(MA values — see Technical Indicators above)")
+                    has_ma_note = True
+            else:
+                filtered.append(ev)
+        return filtered
+
+    lines = [f"📈 Bull case ({bp}%): {bull.get('thesis', 'N/A')}"]
+    for ev in _filter_evidence(bull.get("key_evidence", [])):
+        lines.append(f"   • {ev}")
+
+    lines += ["", f"📉 Bear case ({brp}%): {bear.get('thesis', 'N/A')}"]
+    for ev in _filter_evidence(bear.get("key_evidence", [])):
+        lines.append(f"   • {ev}")
+
+    lines += [
+        "",
+        f"⚖️  Base case ({bap}%): {base.get('thesis', 'N/A')}",
+        "",
+        f"🎯 Direction: {dir_display}  |  Confidence: {round(conf * 100)}%",
+        "   Target & Invalidation: (see Reconciliation section below)",
+    ]
+    if rsn:
+        lines += ["", f"💬 {rsn}"]
+
+    return "\n".join(lines)
+
+
+# ─────────────────────────────────────────────────────────────
 #  Tier 2: Groq
 # ─────────────────────────────────────────────────────────────
 def _tier2_groq(data: dict) -> str:
@@ -821,17 +1327,16 @@ def _tier2_groq(data: dict) -> str:
     except ImportError:
         raise RuntimeError("groq ไม่ได้ติดตั้ง — รัน: pip install groq")
 
-    # Calculate trading card locally (deterministic)
+    # Pre-compute everything except targets (direction unknown until AI answers)
     scores                           = _calc_all_scores(data)
-    targets                          = _calc_targets(data)
     pair, _                          = _normalize_symbol(data["symbol"])
     chg_1h                           = _fetch_1h_change(pair)
     confidence                       = _get_setup_confidence(data)
     expected_pct, horizon, hz_source = _calc_expected_and_horizon(data, _current_horizon)
 
+    _tech2 = data.get("technicals", {})
     _timing = None
     if _TIMING_AVAILABLE:
-        _tech2  = data.get("technicals", {})
         _timing = recommend_trading_time(
             phase         = _tech2.get("price_structure", {}).get("phase", ""),
             vol_spike     = _tech2.get("volume_spike", 1.0) or 1.0,
@@ -842,39 +1347,80 @@ def _tier2_groq(data: dict) -> str:
             horizon_source= hz_source,
         )
 
-    card                             = _format_trading_card(
+    client        = Groq(api_key=GROQ_API_KEY)
+    current_price = data.get("price", {}).get("current", 0) or 0
+    user_prompt   = _build_prompt(data, expected_pct, horizon, confidence)
+    last_raw      = ""
+
+    ai_json = _FALLBACK_NEUTRAL_RESPONSE
+    for attempt in range(3):   # initial + 2 retries
+        try:
+            messages = [
+                {"role": "system", "content": AI_SYSTEM_PROMPT_NEUTRAL},
+                {"role": "user",   "content": user_prompt},
+            ]
+            if attempt > 0 and last_raw:
+                messages += [
+                    {"role": "assistant", "content": last_raw},
+                    {"role": "user",      "content":
+                     f"ตอบกลับผิด constraint: {_last_groq_error}\n"
+                     "กรุณาตอบใหม่เป็น JSON ที่ถูกต้องตาม schema"},
+                ]
+            resp    = client.chat.completions.create(
+                model=GROQ_MODEL, messages=messages,
+                temperature=0.4, max_tokens=1500,
+            )
+            last_raw = resp.choices[0].message.content
+        except Exception as e:
+            log.warning("Groq call failed (attempt %d): %s", attempt + 1, e)
+            break
+
+        parsed = _parse_ai_json(last_raw)
+        if parsed is None:
+            _last_groq_error = "invalid JSON"
+            log.info("Groq retry %d — invalid JSON", attempt + 1)
+            continue
+
+        valid, err = _validate_ai_response(parsed, current_price)
+        if valid:
+            ai_json = parsed
+            break
+        _last_groq_error = err
+        log.info("Groq retry %d — constraint: %s", attempt + 1, err)
+    else:
+        log.warning("Groq all retries exhausted — using neutral fallback")
+
+    # Task 7: reconciliation gate
+    _calib2      = _get_calibration_for_targets()
+    _neutral2    = _get_neutral_score(data)
+    ai_json["symbol"] = data.get("symbol", "")
+    final_signal = (
+        _reconcile(ai_json, _neutral2, _calib2)
+        if _RECONCILIATION_AVAILABLE
+        else {"action": ai_json.get("direction", "neutral").upper(), **ai_json,
+              "neutral_score": _neutral2}
+    )
+    direction2 = final_signal.get("direction", "neutral")
+
+    # Task 5: compute targets using reconciled direction
+    targets = _calc_targets_new(data, direction2, _calib2)
+
+    card = _format_trading_card(
         data, f"Tier 2 — Groq ({GROQ_MODEL})", scores, targets,
         chg_1h, confidence, expected_pct, horizon, hz_source, _timing
     )
 
-    client = Groq(api_key=GROQ_API_KEY)
-    response = client.chat.completions.create(
-        model=GROQ_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "คุณคือ CRYPTO OPPORTUNITY HUNTER มืออาชีพ — เชี่ยวชาญ momentum trading, "
-                    "breakout plays, และ asymmetric risk/reward "
-                    "มองหา upside opportunity ก่อน — หา alpha, หา catalyst, หา timing "
-                    "ตอบภาษาไทย กระชับ aggressive — entry/stop/target แบบ multi-TP "
-                    "R:R ขั้นต่ำ 3:1 — ถ้า setup ไม่ดีพอ บอกตรงๆ ว่า PASS"
-                ),
-            },
-            {"role": "user", "content": _build_prompt(data, expected_pct, horizon, confidence)},
-        ],
-        temperature=0.4,
-        max_tokens=1500,
-    )
-    ai_text = response.choices[0].message.content
-
+    ai_text = _format_ai_analysis(ai_json, f"Groq ({GROQ_MODEL})")
     ai_section = (
-        "\n"
-        "────────────────────────────────────────────────────────────\n"
+        "\n────────────────────────────────────────────────────────────\n"
         "🦙 AI ANALYSIS (Groq Llama3):\n"
         f"{ai_text}\n"
     )
-    return card + ai_section
+    recon_section = (
+        format_reconcile_section(final_signal, targets)
+        if _RECONCILIATION_AVAILABLE else ""
+    )
+    return card + ai_section + recon_section
 
 
 # ─────────────────────────────────────────────────────────────
@@ -883,17 +1429,16 @@ def _tier2_groq(data: dict) -> str:
 def _tier1_claude(data: dict) -> str:
     import anthropic
 
-    # Calculate trading card locally (deterministic)
+    # Pre-compute everything except targets (direction unknown until AI answers)
     scores                           = _calc_all_scores(data)
-    targets                          = _calc_targets(data)
     pair, _                          = _normalize_symbol(data["symbol"])
     chg_1h                           = _fetch_1h_change(pair)
     confidence                       = _get_setup_confidence(data)
     expected_pct, horizon, hz_source = _calc_expected_and_horizon(data, _current_horizon)
 
+    _tech1 = data.get("technicals", {})
     _timing = None
     if _TIMING_AVAILABLE:
-        _tech1  = data.get("technicals", {})
         _timing = recommend_trading_time(
             phase         = _tech1.get("price_structure", {}).get("phase", ""),
             vol_spike     = _tech1.get("volume_spike", 1.0) or 1.0,
@@ -904,34 +1449,77 @@ def _tier1_claude(data: dict) -> str:
             horizon_source= hz_source,
         )
 
-    card                             = _format_trading_card(
+    client        = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    current_price = data.get("price", {}).get("current", 0) or 0
+    user_prompt   = _build_prompt(data, expected_pct, horizon, confidence)
+    last_raw      = ""
+
+    ai_json = _FALLBACK_NEUTRAL_RESPONSE
+    for attempt in range(3):   # initial + 2 retries
+        try:
+            msgs = [{"role": "user", "content": user_prompt}]
+            if attempt > 0 and last_raw:
+                msgs += [
+                    {"role": "assistant", "content": last_raw},
+                    {"role": "user",      "content":
+                     f"ตอบกลับผิด constraint: {_last_claude_error}\n"
+                     "กรุณาตอบใหม่เป็น JSON ที่ถูกต้องตาม schema"},
+                ]
+            resp     = client.messages.create(
+                model=CLAUDE_MODEL, max_tokens=1500,
+                system=AI_SYSTEM_PROMPT_NEUTRAL, messages=msgs,
+            )
+            last_raw = resp.content[0].text
+        except Exception as e:
+            log.warning("Claude call failed (attempt %d): %s", attempt + 1, e)
+            break
+
+        parsed = _parse_ai_json(last_raw)
+        if parsed is None:
+            _last_claude_error = "invalid JSON"
+            log.info("Claude retry %d — invalid JSON", attempt + 1)
+            continue
+
+        valid, err = _validate_ai_response(parsed, current_price)
+        if valid:
+            ai_json = parsed
+            break
+        _last_claude_error = err
+        log.info("Claude retry %d — constraint: %s", attempt + 1, err)
+    else:
+        log.warning("Claude all retries exhausted — using neutral fallback")
+
+    # Task 7: reconciliation gate
+    _calib1      = _get_calibration_for_targets()
+    _neutral1    = _get_neutral_score(data)
+    ai_json["symbol"] = data.get("symbol", "")
+    final_signal1 = (
+        _reconcile(ai_json, _neutral1, _calib1)
+        if _RECONCILIATION_AVAILABLE
+        else {"action": ai_json.get("direction", "neutral").upper(), **ai_json,
+              "neutral_score": _neutral1}
+    )
+    direction1 = final_signal1.get("direction", "neutral")
+
+    # Task 5: compute targets using reconciled direction
+    targets = _calc_targets_new(data, direction1, _calib1)
+
+    card = _format_trading_card(
         data, f"Tier 1 — Claude ({CLAUDE_MODEL})", scores, targets,
         chg_1h, confidence, expected_pct, horizon, hz_source, _timing
     )
 
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-    response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=1500,
-        system=(
-            "คุณคือ CRYPTO OPPORTUNITY HUNTER ระดับ Professional — "
-            "เชี่ยวชาญ momentum trading, pre-breakout setups, volume analysis "
-            "มองหา asymmetric upside ก่อนเสมอ — หา catalyst, narrative, และ timing ที่ดีที่สุด "
-            "ตอบภาษาไทย กระชับแต่ครบ ระบุตัวเลข entry/stop/multi-target ชัดเจน "
-            "R:R ขั้นต่ำ 3:1 — ถ้า setup ไม่ดีพอ บอก PASS พร้อมเหตุผลตรงๆ "
-            "แจ้ง Red Flags หลัง Bull thesis เสมอ (ไม่ใช่ก่อน)"
-        ),
-        messages=[{"role": "user", "content": _build_prompt(data, expected_pct, horizon, confidence)}],
-    )
-    ai_text = response.content[0].text
-
+    ai_text = _format_ai_analysis(ai_json, f"Claude ({CLAUDE_MODEL})")
     ai_section = (
-        "\n"
-        "────────────────────────────────────────────────────────────\n"
+        "\n────────────────────────────────────────────────────────────\n"
         f"🧠 AI ANALYSIS (Claude {CLAUDE_MODEL}):\n"
         f"{ai_text}\n"
     )
-    return card + ai_section
+    recon_section1 = (
+        format_reconcile_section(final_signal1, targets)
+        if _RECONCILIATION_AVAILABLE else ""
+    )
+    return card + ai_section + recon_section1
 
 
 # ─────────────────────────────────────────────────────────────
@@ -998,17 +1586,34 @@ def analyze(symbol: str, data: dict | None = None) -> dict:
             horizon_source= _hz_src,
         )
 
-    result = {
-        "symbol":     base,
-        "timestamp":  datetime.utcnow().isoformat() + "Z",
-        "tier_used":  used_tier,
-        "analysis":   analysis_text,
-        "forecast": {
+    # Build forecast block — compatible with both legacy (float) and new (dict) modes
+    if isinstance(_exp, dict):
+        _forecast_block = {
+            "expected_pct":   _exp.get("upper"),   # backward-compat field (upper bound)
+            "upper_pct":      _exp.get("upper"),
+            "lower_pct":      _exp.get("lower"),
+            "mode":           "new",
+        }
+    else:
+        _forecast_block = {
             "expected_pct":   _exp,
-            "horizon_days":   _hz,
-            "horizon_source": _hz_src,
-            "accuracy_pct":   _conf,
-        },
+            "upper_pct":      None,
+            "lower_pct":      None,
+            "mode":           "legacy",
+        }
+    _forecast_block.update({
+        "horizon_days":   _hz,
+        "horizon_source": _hz_src,
+        "accuracy_pct":   _conf,
+    })
+
+    result = {
+        "symbol":        base,
+        "timestamp":     datetime.utcnow().isoformat() + "Z",
+        "tier_used":     used_tier,
+        "analysis":      analysis_text,
+        "forecast":      _forecast_block,
+        "neutral_score": None,   # populated by tier 1/2 via reconciliation
         "timing": _timing_json,
         "data_snapshot": {
             "price":            data.get("price", {}).get("current"),

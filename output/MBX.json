@@ -1,0 +1,18 @@
+{
+  "symbol": "MBX",
+  "pair": "MBXUSDT",
+  "timestamp": "2026-05-02T04:00:46.125921+00:00",
+  "data_source": "unknown",
+  "technicals": {},
+  "bitkub": {
+    "listed": true,
+    "price_thb": 1.99,
+    "high_24h_thb": 2.59,
+    "low_24h_thb": 1.21,
+    "change_24h_pct": 60.48,
+    "volume_thb": 4364267.22,
+    "volume_base": 2440107.2260657
+  },
+  "opportunity_score": 12,
+  "opportunity_grade": "F"
+}

@@ -1,13 +1,13 @@
 {
   "symbol": "LUNA",
-  "timestamp": "2026-04-30T06:33:26.194543Z",
-  "tier_used": "Tier 3 — Technical Rules",
-  "analysis": "════════════════════════════════════════════════════════════\n🚀 LUNA/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.062600\n   1h: -0.16%  |  7d: +0.00%\n   Volume 24h: $2.70M  |  vs Average: +0%\n\n📈 คะแนนย่อย:\n  Momentum        : 1.0/10\n  Upside Potential: 4.5/10\n  Technical       : 7.0/10\n  Risk/Volatility : 6.0/10\n\n🎯 โอกาส:\n  ขึ้น: 44%  |  ลง: 56%\n  ถึง Target $0.090886: +45.2%\n  ATH Distance: -24.0%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+19.89% / -6.33%]\n\n🏆 คะแนนความคุ้มค่า: 42/100 — High Risk  |  ความแม่นยำ: ~16%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ⚠️ Sell\n  Entry      : $0.062600\n  Stop Loss  : $0.055529  (-11.3%) ← ไม่เกิน 15%\n  TP1        : $0.076743  (+22.6%) ← ภายใน 1 ชม.\n  TP2        : $0.090886  (+45.2%) ← ภายใน 24 ชม.\n  TP3        : $0.109743  (+75.3%) ← ~3-4 วัน\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.060500  —  แนวต้าน: $0.066000\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $0.060500\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : Asian Open (08:00-10:00 ICT)  ★\n  เซสชั่นรอง  : US Open (20:30-22:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | RSI 4h neutral — รอทิศทาง breakout\n  หลีกเลี่ยง  : 05:00-08:00 ICT (low-volume dead zone)\n  ระดับเร่งด่วน: 🟡 MEDIUM — ตั้ง alert รอ signal\n  หน้าต่างถัดไป: Asian Open ใน 18.4 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 4  |  Bear: 4\n  🔥 RSI 54.4 — Sweet spot! momentum กำลังสร้างตัว\n  ❌ RSI 4h 40.2 — Intraday อ่อนแรง\n  ❌ ราคา < MA99 — Bear market structure\n  ✅ ราคา > MA25 — Short-term uptrend\n  📈 Phase: UPTREND_PULLBACK — Healthy dip in uptrend\n  📊 Volume trend: ลดลง — weak conviction\n\n📍 PRICE STRUCTURE:\n  Phase       : UPTREND_PULLBACK\n  Range       : 24.02%\n  Higher Lows : True\n  Volume Trend: decreasing\n  Volume Spike: ×1.00\n\n🇹🇭 ✅ Bitkub: ฿0.0023 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "timestamp": "2026-04-30T19:02:22.718785Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 LUNA/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.070900\n   1h: +0.42%  |  7d: +0.00%\n   Volume 24h: $5.02M  |  vs Average: +77%\n\n📈 คะแนนย่อย:\n  Momentum        : 7.5/10\n  Upside Potential: 5.0/10\n  Technical       : 9.5/10\n  Risk/Volatility : 4.0/10\n\n🎯 โอกาส:\n  ขึ้น: 63%  |  ลง: 37%\n  ถึง Target $0.102143: +44.1%\n  ATH Distance: -14.0%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+27.78% / -4.07%]\n\n🏆 คะแนนความคุ้มค่า: 70/100 — Good Opportunity  |  ความแม่นยำ: ~20%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.070900\n  Stop Loss  : $0.063089  (-11.0%) ← ไม่เกิน 15%\n  TP1        : $0.086521  (+22.0%) ← ภายใน 1 ชม.\n  TP2        : $0.102143  (+44.1%) ← ภายใน 24 ชม.\n  TP3        : $0.122971  (+73.4%) ← ~3-4 วัน\n  R/R Ratio  : 1:4.0\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.061400  —  แนวต้าน: $0.071700\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $0.061400\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : Asian Open (08:00-10:00 ICT)  ★\n  เซสชั่นรอง  : US Open (20:30-22:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | RSI 4h neutral — รอทิศทาง breakout\n  หลีกเลี่ยง  : 05:00-08:00 ICT (low-volume dead zone)\n  ระดับเร่งด่วน: 🟡 MEDIUM — ตั้ง alert รอ signal\n  หน้าต่างถัดไป: Asian Open ใน 6.0 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n🚀 OPPORTUNITY SCAN: LUNA/USDT\n\n1. 🎯 Opportunity Grade [B+] — น่าสนใจเพราะมี Volume Spike ×1.77 และราคาอยู่เหนือ MA25 และ MA99 ที่ $0.059216 และ $0.062745 ตามลำดับ\n2. 📈 Bull Scenario — คาดว่าจะขึ้น +40.0% ใน 3 วัน หากสามารถทะลุ $0.0824 และไปถึง $0.1154 ได้\n3. ⚡ Entry Strategy — เข้าซื้อในโซน $0.065-$0.070 พร้อมกับ volume confirmation ที่มากกว่า $5,017,338.25 USDT และควรเข้าเลยหากมี pullback ที่ $0.065\n4. 🎯 Multi-Target Exit — \n   - SL: $0.0614 (ด้านล่าง 24h Low)\n   - TP1: $0.0824 (Period High)\n   - TP2: $0.1000 (ขึ้น 40% จาก $0.0709)\n   - TP3: $0.1154 (ขึ้น 62% จาก $0.0709)\n5. ☠️ Invalidation — หากต่ำกว่า $0.0614 หรือไม่สามารถทะลุ $0.0824 ใน 3 วัน\n6. 🇹🇭 Platform — มีใน Bitkub ราคา ฿0.0024 THB\n7. 📊 Forecast — สอดคล้องกับ analysis ที่คาดว่าจะขึ้น +40.0% ใน 3 วัน แต่มีความแม่นยำ ~20%\n8. ⚡ VERDICT: FIRE 🔥 — เนื่องจากมี setup ที่ดีและมี potential ขึ้น +40.0% ใน 3 วัน แต่ต้องมีการจัดการความเสี่ยงอย่างเหมาะสม\n",
   "forecast": {
-    "expected_pct": -7.44,
+    "expected_pct": 40.0,
     "horizon_days": 3,
     "horizon_source": "auto",
-    "accuracy_pct": 16.3
+    "accuracy_pct": 19.7
   },
   "timing": {
     "best_session": "Asian Open (08:00-10:00 ICT)",
@@ -18,20 +18,20 @@
     "horizon_label": "Short-term (3 วัน) (auto)",
     "urgency": "MEDIUM",
     "urgency_display": "🟡 MEDIUM — ตั้ง alert รอ signal",
-    "hours_to_next": 18.4,
-    "next_window_str": "ใน 18.4 ชม."
+    "hours_to_next": 6.0,
+    "next_window_str": "ใน 6.0 ชม."
   },
   "data_snapshot": {
-    "price": 0.0626,
-    "change_24h_pct": -3.1,
+    "price": 0.0709,
+    "change_24h_pct": 15.29,
     "change_7d_pct": null,
-    "rsi_14": 54.37,
-    "rsi_14_4h": 40.2,
-    "volume_spike": 1.0,
+    "rsi_14": 66.88,
+    "rsi_14_4h": 55.36,
+    "volume_spike": 1.77,
     "phase": "UPTREND_PULLBACK",
-    "opportunity_grade": "F",
-    "opportunity_score": 34,
+    "opportunity_grade": "B+",
+    "opportunity_score": 66,
     "bitkub_listed": true,
-    "bitkub_price_thb": 0.002255
+    "bitkub_price_thb": 0.002425
   }
 }

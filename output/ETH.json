@@ -1,67 +1,19 @@
 {
   "symbol": "ETH",
   "pair": "ETHUSDT",
-  "timestamp": "2026-04-29T17:55:22.830754+00:00",
+  "timestamp": "2026-05-05T16:18:56.365430+00:00",
   "data_source": "binance",
   "price": {
-    "current": 2272.52,
-    "open_24h": 2288.81,
-    "high_24h": 2346.95,
-    "low_24h": 2263.1,
-    "change_24h_pct": -0.71,
-    "volume_24h_usdt": 623582262.92,
-    "volume_24h_base": 270535.5629,
-    "trades_24h": 2843749
+    "current": 2380.02,
+    "open_24h": 2349.59,
+    "high_24h": 2399.5,
+    "low_24h": 2344.83,
+    "change_24h_pct": 1.29,
+    "volume_24h_usdt": 657337652.27,
+    "volume_24h_base": 276748.613,
+    "trades_24h": 2569982
   },
   "history_30d": [
-    {
-      "date": "2026-03-31",
-      "open": 2026.48,
-      "high": 2124.03,
-      "low": 2012.64,
-      "close": 2105.43,
-      "volume": 421897.9023
-    },
-    {
-      "date": "2026-04-01",
-      "open": 2105.43,
-      "high": 2167.85,
-      "low": 2082.08,
-      "close": 2140.35,
-      "volume": 399227.3779
-    },
-    {
-      "date": "2026-04-02",
-      "open": 2140.35,
-      "high": 2159.37,
-      "low": 2017.04,
-      "close": 2057.17,
-      "volume": 346872.8323
-    },
-    {
-      "date": "2026-04-03",
-      "open": 2057.18,
-      "high": 2081.76,
-      "low": 2040.66,
-      "close": 2053.83,
-      "volume": 136266.6393
-    },
-    {
-      "date": "2026-04-04",
-      "open": 2053.83,
-      "high": 2084.0,
-      "low": 2044.63,
-      "close": 2065.52,
-      "volume": 86504.4406
-    },
-    {
-      "date": "2026-04-05",
-      "open": 2065.51,
-      "high": 2123.49,
-      "low": 2021.5,
-      "close": 2110.17,
-      "volume": 157353.3199
-    },
     {
       "date": "2026-04-06",
       "open": 2110.17,
@@ -250,46 +202,94 @@
       "date": "2026-04-29",
       "open": 2289.42,
       "high": 2346.95,
-      "low": 2263.1,
-      "close": 2272.52,
-      "volume": 240361.0166
+      "low": 2220.36,
+      "close": 2252.9,
+      "volume": 355078.1015
+    },
+    {
+      "date": "2026-04-30",
+      "open": 2252.9,
+      "high": 2279.0,
+      "low": 2231.64,
+      "close": 2257.51,
+      "volume": 167194.2776
+    },
+    {
+      "date": "2026-05-01",
+      "open": 2257.51,
+      "high": 2325.28,
+      "low": 2257.21,
+      "close": 2295.63,
+      "volume": 191082.555
+    },
+    {
+      "date": "2026-05-02",
+      "open": 2295.63,
+      "high": 2343.6,
+      "low": 2292.91,
+      "close": 2316.97,
+      "volume": 85588.4724
+    },
+    {
+      "date": "2026-05-03",
+      "open": 2316.97,
+      "high": 2356.92,
+      "low": 2297.59,
+      "close": 2322.65,
+      "volume": 151074.4342
+    },
+    {
+      "date": "2026-05-04",
+      "open": 2322.65,
+      "high": 2398.93,
+      "low": 2309.24,
+      "close": 2347.16,
+      "volume": 453020.7985
+    },
+    {
+      "date": "2026-05-05",
+      "open": 2347.17,
+      "high": 2399.5,
+      "low": 2344.93,
+      "close": 2380.02,
+      "volume": 204484.9904
     }
   ],
   "technicals": {
-    "rsi_14": 42.19,
-    "ma7": 2314.257143,
-    "ma25": 2288.268,
-    "ma99": 2205.027879,
-    "above_ma25": false,
+    "rsi_14": 56.54,
+    "ma7": 2310.405714,
+    "ma25": 2320.9772,
+    "ma99": 2167.739899,
+    "above_ma25": true,
     "above_ma99": true,
-    "atr_14": 84.23642857,
-    "high_period": 3200.5,
+    "atr_14": 73.41571429,
+    "high_period": 3045.78,
     "low_period": 1747.8,
-    "pct_from_high": -28.99,
+    "pct_from_high": -21.86,
     "price_structure": {
       "phase": "UPTREND_PULLBACK",
       "range_pct": 21.89,
       "higher_lows": true,
       "volume_trend": "decreasing"
     },
-    "volume_spike": 1.02,
-    "rsi_14_4h": 40.15
+    "volume_spike": 1.19,
+    "rsi_14_4h": 64.54
   },
   "market_data": {
-    "market_cap_usd": 274262267609.10498,
-    "volume_24h_usd": 16787220273.685257,
-    "change_24h_pct": -0.7618068694980918,
+    "market_cap_usd": 287350788104.86255,
+    "volume_24h_usd": 15994762468.828026,
+    "change_24h_pct": 1.3540759343617188,
     "change_7d_pct": null
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 74370.96,
-    "high_24h_thb": 76500.0,
-    "low_24h_thb": 74005.01,
-    "change_24h_pct": 0.31,
-    "volume_thb": 77809665.96,
-    "volume_base": 1031.96409694
+    "price_thb": 77324.8,
+    "high_24h_thb": 78100.0,
+    "low_24h_thb": 76400.0,
+    "change_24h_pct": 1.0,
+    "volume_thb": 87185252.3,
+    "volume_base": 1125.12677385
   },
-  "opportunity_score": 28,
+  "opportunity_score": 39,
   "opportunity_grade": "D"
 }

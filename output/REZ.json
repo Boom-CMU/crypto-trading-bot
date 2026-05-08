@@ -1,43 +1,19 @@
 {
   "symbol": "REZ",
   "pair": "REZUSDT",
-  "timestamp": "2026-04-29T11:20:00.817035+00:00",
+  "timestamp": "2026-05-02T04:00:50.307555+00:00",
   "data_source": "binance",
   "price": {
-    "current": 0.0043,
-    "open_24h": 0.00405,
-    "high_24h": 0.00455,
-    "low_24h": 0.00404,
-    "change_24h_pct": 6.17,
-    "volume_24h_usdt": 3190099.33,
-    "volume_24h_base": 739136777.4,
-    "trades_24h": 21370
+    "current": 0.00471,
+    "open_24h": 0.00453,
+    "high_24h": 0.00497,
+    "low_24h": 0.00426,
+    "change_24h_pct": 3.97,
+    "volume_24h_usdt": 1446507.97,
+    "volume_24h_base": 314430754.1,
+    "trades_24h": 11360
   },
   "history_30d": [
-    {
-      "date": "2026-03-31",
-      "open": 0.00331,
-      "high": 0.00337,
-      "low": 0.00326,
-      "close": 0.00331,
-      "volume": 182361549.3
-    },
-    {
-      "date": "2026-04-01",
-      "open": 0.0033,
-      "high": 0.00347,
-      "low": 0.00324,
-      "close": 0.00338,
-      "volume": 223283441.6
-    },
-    {
-      "date": "2026-04-02",
-      "open": 0.00337,
-      "high": 0.00413,
-      "low": 0.00327,
-      "close": 0.00368,
-      "volume": 1731947206.0
-    },
     {
       "date": "2026-04-03",
       "open": 0.00368,
@@ -250,46 +226,64 @@
       "date": "2026-04-29",
       "open": 0.00433,
       "high": 0.00448,
-      "low": 0.00428,
-      "close": 0.0043,
-      "volume": 126301132.4
+      "low": 0.00405,
+      "close": 0.00425,
+      "volume": 253101011.5
+    },
+    {
+      "date": "2026-04-30",
+      "open": 0.00425,
+      "high": 0.00472,
+      "low": 0.00415,
+      "close": 0.00459,
+      "volume": 457967539.9
+    },
+    {
+      "date": "2026-05-01",
+      "open": 0.00459,
+      "high": 0.00497,
+      "low": 0.00426,
+      "close": 0.00485,
+      "volume": 298159273.8
+    },
+    {
+      "date": "2026-05-02",
+      "open": 0.00485,
+      "high": 0.00487,
+      "low": 0.00465,
+      "close": 0.00471,
+      "volume": 38767602.6
     }
   ],
   "technicals": {
-    "rsi_14": 60.61,
-    "ma7": 0.004054,
-    "ma25": 0.003824,
-    "ma99": 0.003519,
+    "rsi_14": 70.54,
+    "ma7": 0.00439,
+    "ma25": 0.003952,
+    "ma99": 0.003522,
     "above_ma25": true,
     "above_ma99": true,
-    "atr_14": 0.00031286,
+    "atr_14": 0.00034143,
     "high_period": 0.00536,
     "low_period": 0.00264,
-    "pct_from_high": -19.78,
+    "pct_from_high": -12.13,
     "price_structure": {
-      "phase": "VOLATILE_NO_STRUCTURE",
-      "range_pct": 35.2,
-      "higher_lows": false,
+      "phase": "UPTREND_PULLBACK",
+      "range_pct": 51.09,
+      "higher_lows": true,
       "volume_trend": "increasing"
     },
-    "volume_spike": 2.19,
-    "rsi_14_4h": 59.17
-  },
-  "market_data": {
-    "market_cap_usd": 35504965.107955776,
-    "volume_24h_usd": 18626263.7591294,
-    "change_24h_pct": 5.800291800716946,
-    "change_7d_pct": null
+    "volume_spike": 1.0,
+    "rsi_14_4h": 65.33
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 0.1406,
-    "high_24h_thb": 0.1452,
-    "low_24h_thb": 0.1315,
-    "change_24h_pct": 6.92,
-    "volume_thb": 1639667.07,
-    "volume_base": 11834079.22795555
+    "price_thb": 0.1532,
+    "high_24h_thb": 0.1609,
+    "low_24h_thb": 0.1385,
+    "change_24h_pct": 4.72,
+    "volume_thb": 3770411.45,
+    "volume_base": 25501891.84285312
   },
-  "opportunity_score": 53,
-  "opportunity_grade": "B"
+  "opportunity_score": 35,
+  "opportunity_grade": "D"
 }

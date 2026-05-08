@@ -1,59 +1,19 @@
 {
   "symbol": "DOGE",
   "pair": "DOGEUSDT",
-  "timestamp": "2026-04-30T06:33:21.657897+00:00",
+  "timestamp": "2026-05-05T16:19:18.164536+00:00",
   "data_source": "binance",
   "price": {
-    "current": 0.10598,
-    "open_24h": 0.10218,
-    "high_24h": 0.112,
-    "low_24h": 0.10096,
-    "change_24h_pct": 3.72,
-    "volume_24h_usdt": 314328165.28,
-    "volume_24h_base": 2969043378.0,
-    "trades_24h": 2214857
+    "current": 0.1124,
+    "open_24h": 0.11046,
+    "high_24h": 0.11294,
+    "low_24h": 0.10996,
+    "change_24h_pct": 1.76,
+    "volume_24h_usdt": 67674702.42,
+    "volume_24h_base": 606680472.0,
+    "trades_24h": 509475
   },
   "history_30d": [
-    {
-      "date": "2026-04-01",
-      "open": 0.09232,
-      "high": 0.09453,
-      "low": 0.0916,
-      "close": 0.09219,
-      "volume": 641844567.0
-    },
-    {
-      "date": "2026-04-02",
-      "open": 0.09218,
-      "high": 0.09273,
-      "low": 0.08899,
-      "close": 0.0904,
-      "volume": 672578495.0
-    },
-    {
-      "date": "2026-04-03",
-      "open": 0.0904,
-      "high": 0.09259,
-      "low": 0.08992,
-      "close": 0.09156,
-      "volume": 390119550.0
-    },
-    {
-      "date": "2026-04-04",
-      "open": 0.09155,
-      "high": 0.09312,
-      "low": 0.09073,
-      "close": 0.09207,
-      "volume": 294338905.0
-    },
-    {
-      "date": "2026-04-05",
-      "open": 0.09206,
-      "high": 0.09244,
-      "low": 0.08971,
-      "close": 0.09238,
-      "volume": 446283605.0
-    },
     {
       "date": "2026-04-06",
       "open": 0.09239,
@@ -251,39 +211,85 @@
       "open": 0.10407,
       "high": 0.10841,
       "low": 0.10397,
-      "close": 0.10596,
-      "volume": 678188039.0
+      "close": 0.1065,
+      "volume": 1455486372.0
+    },
+    {
+      "date": "2026-05-01",
+      "open": 0.1065,
+      "high": 0.11055,
+      "low": 0.10641,
+      "close": 0.10853,
+      "volume": 1132037099.0
+    },
+    {
+      "date": "2026-05-02",
+      "open": 0.10853,
+      "high": 0.10936,
+      "low": 0.10714,
+      "close": 0.10851,
+      "volume": 560055038.0
+    },
+    {
+      "date": "2026-05-03",
+      "open": 0.10851,
+      "high": 0.10966,
+      "low": 0.10715,
+      "close": 0.1083,
+      "volume": 438082060.0
+    },
+    {
+      "date": "2026-05-04",
+      "open": 0.10829,
+      "high": 0.11383,
+      "low": 0.10765,
+      "close": 0.1101,
+      "volume": 1439454344.0
+    },
+    {
+      "date": "2026-05-05",
+      "open": 0.11011,
+      "high": 0.11294,
+      "low": 0.10996,
+      "close": 0.1124,
+      "volume": 463612570.0
     }
   ],
   "technicals": {
-    "rsi_14": 66.08,
-    "ma7": 0.10057,
-    "ma25": 0.096148,
-    "ma99": 0.098137,
+    "rsi_14": 95.13,
+    "ma7": 0.108346,
+    "ma25": 0.099515,
+    "ma99": 0.097462,
     "above_ma25": true,
     "above_ma99": true,
-    "atr_14": 0.00416143,
-    "high_period": 0.12884,
+    "atr_14": 0.003975,
+    "high_period": 0.12775,
     "low_period": 0.08001,
-    "pct_from_high": -17.74,
+    "pct_from_high": -12.02,
     "price_structure": {
       "phase": "UPTREND_PULLBACK",
-      "range_pct": 17.59,
+      "range_pct": 24.74,
       "higher_lows": true,
       "volume_trend": "decreasing"
     },
-    "volume_spike": 2.81,
-    "rsi_14_4h": 62.5
+    "volume_spike": 0.6,
+    "rsi_14_4h": 67.0
+  },
+  "market_data": {
+    "market_cap_usd": 17326018049.71675,
+    "volume_24h_usd": 1209777667.7094378,
+    "change_24h_pct": 2.193553026101454,
+    "change_7d_pct": null
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 3.4767,
-    "high_24h_thb": 3.6447,
-    "low_24h_thb": 3.309,
-    "change_24h_pct": 4.41,
-    "volume_thb": 141301823.45,
-    "volume_base": 40795574.73404872
+    "price_thb": 3.65,
+    "high_24h_thb": 3.6699,
+    "low_24h_thb": 3.5802,
+    "change_24h_pct": 1.39,
+    "volume_thb": 47060784.38,
+    "volume_base": 12954106.57104533
   },
-  "opportunity_score": 59,
-  "opportunity_grade": "C+"
+  "opportunity_score": 24,
+  "opportunity_grade": "F"
 }

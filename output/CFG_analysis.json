@@ -1,0 +1,41 @@
+{
+  "symbol": "CFG",
+  "timestamp": "2026-05-07T15:50:35.097356Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 CFG/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.294600\n   1h: +0.27%  |  7d: +0.00%\n   Volume 24h: $16.16M  |  vs Average: +259%\n\n📈 คะแนนย่อย:\n  Momentum        : 8.5/10\n  Upside Potential: 5.0/10\n  Technical       : 7.0/10\n  Risk/Volatility : 5.0/10\n\n🎯 โอกาส:\n  ขึ้น: 67%  |  ลง: 33%\n  ถึง Target $0.361439: +54.5%\n  ATH Distance: -15.3%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+36.52% / -4.49%]\n\n🏆 คะแนนความคุ้มค่า: 72/100 — Good Opportunity  |  ความแม่นยำ: ~16%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.294600\n  Target     : $0.361439  (+22.7%)  ↑\n  Invalidation: $0.254496  (-13.6%)\n  R/R Ratio  : 1:1.7\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.250500  —  แนวต้าน: $0.310800\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $0.250500\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Day Trade (1 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน\n  หลีกเลี่ยง  : 05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT\n  ระดับเร่งด่วน: 🔴 HIGH — เข้าได้เลย อย่ารอนาน\n  หน้าต่างถัดไป: US Open ใน 21.7 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n📈 Bull case (45%): ราคา CFG/USDT อาจเพิ่มขึ้นเนื่องจากราคาปัจจุบันอยู่เหนือ MA25 และ RSI Daily(14) อยู่ที่ 66.42 ซึ่งแสดงถึงโมเมนตัมเชิงบวก\n   • MA25: $0.228688\n   • RSI Daily(14): 66.42\n\n📉 Bear case (30%): ราคา CFG/USDT อาจลดลงเนื่องจากราคาปัจจุบันอยู่ใกล้กับ Period High และ RSI 4h อยู่ที่ 75.9 ซึ่งแสดงถึงการซื้อมากเกินไป\n   • Period High: $0.348\n   • RSI 4h: 75.9\n\n⚖️  Base case (25%): ราคา CFG/USDT อาจไม่มีการเปลี่ยนแปลงมากนักเนื่องจากราคาปัจจุบันอยู่ในระยะการถดถอยและ Volume Trend อยู่ในแนวโน้มลดลง\n\n🎯 Direction: 🟢 LONG  |  Confidence: 45%\n   Target: $0.310800  |  Invalidation: $0.250500\n\n💬 การวิเคราะห์ข้อมูลแสดงให้เห็นว่าราคาปัจจุบันของ CFG/USDT มีโมเมนตัมเชิงบวก แต่ก็อยู่ใกล้กับ Period High ซึ่งอาจทำให้ราคาลดลงได้ อย่างไรก็ตาม การวิเคราะห์โดยรวมชี้ให้เห็นว่าราคาอาจเพิ่มขึ้นในระยะสั้น\n\n────────────────────────────────────────────────────────────\n🔀 RECONCILIATION:\n   AI Direction  : LONG  (confidence 45%)\n   Neutral Score : +0.818  📈 bullish\n   Final Signal  : ✅ LONG\n",
+  "forecast": {
+    "expected_pct": 3.98,
+    "upper_pct": 3.98,
+    "lower_pct": -3.98,
+    "mode": "new",
+    "horizon_days": 1,
+    "horizon_source": "auto",
+    "accuracy_pct": 16.3
+  },
+  "neutral_score": null,
+  "timing": {
+    "best_session": "US Open (20:30-22:00 ICT)",
+    "best_session_short": "US Open",
+    "secondary_session": "Asian Open (08:00-10:00 ICT)",
+    "entry_condition": "เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน",
+    "avoid_window": "05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT",
+    "horizon_label": "Day Trade (1 วัน) (auto)",
+    "urgency": "HIGH",
+    "urgency_display": "🔴 HIGH — เข้าได้เลย อย่ารอนาน",
+    "hours_to_next": 21.7,
+    "next_window_str": "ใน 21.7 ชม."
+  },
+  "data_snapshot": {
+    "price": 0.2946,
+    "change_24h_pct": 17.56,
+    "change_7d_pct": null,
+    "rsi_14": 66.42,
+    "rsi_14_4h": 75.9,
+    "volume_spike": 3.59,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "A",
+    "opportunity_score": 76,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 9.3836
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "symbol": "XRP",
+  "timestamp": "2026-05-05T16:19:34.922650Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 XRP/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $1.4136\n   1h: +0.16%  |  7d: +0.00%\n   Volume 24h: $87.24M  |  vs Average: +3%\n\n📈 คะแนนย่อย:\n  Momentum        : 1.5/10\n  Upside Potential: 3.0/10\n  Technical       : 5.5/10\n  Risk/Volatility : 8.0/10\n\n🎯 โอกาส:\n  ขึ้น: 39%  |  ลง: 61%\n  ถึง Target $1.4957: +13.9%\n  ATH Distance: -27.4%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+5.42% / -2.13%]\n\n🏆 คะแนนความคุ้มค่า: 34/100 — High Risk  |  ความแม่นยำ: ~16%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ⚠️ Sell\n  Entry      : $1.4136\n  Target     : $1.4957  (+5.8%)  ↑\n  Invalidation: $1.3644  (-3.5%)\n  R/R Ratio  : 1:1.7\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $1.3901  —  แนวต้าน: $1.4206\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $1.3901\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : Asian Open (08:00-10:00 ICT)  ★\n  เซสชั่นรอง  : US Open (20:30-22:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม\n  หลีกเลี่ยง  : 05:00-08:00 ICT (low-volume dead zone)\n  ระดับเร่งด่วน: 🟡 MEDIUM — ตั้ง alert รอ signal\n  หน้าต่างถัดไป: Asian Open ใน 8.7 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n📈 Bull case (40%): ราคาของ XRP/USDT มีแนวโน้มที่จะเพิ่มขึ้นเนื่องจาก RSI Daily(14) อยู่ที่ 43.64 ซึ่งแสดงว่าราคาไม่ได้ถูกซื้อขายมากเกินไป และ MA25 อยู่เหนือ MA7 ซึ่งบ่งชี้ถึงแนวโน้มที่ดี\n   • RSI Daily(14) 43.64\n   • MA25 อยู่เหนือ MA7\n\n📉 Bear case (30%): ราคาของ XRP/USDT มีแนวโน้มที่จะลดลงเนื่องจาก RSI 4h อยู่ที่ 60.79 ซึ่งแสดงว่าราคาได้ถูกซื้อขายมากเกินไป และ MA99 อยู่ต่ำกว่า MA25 ซึ่งบ่งชี้ถึงแนวโน้มที่ไม่ดี\n   • RSI 4h 60.79\n   • MA99 อยู่ต่ำกว่า MA25\n\n⚖️  Base case (30%): ราคาของ XRP/USDT จะไม่มีการเปลี่ยนแปลงมากนักเนื่องจาก Volume Spike ไม่มากนักและ Volume Trend ลดลง\n\n🎯 Direction: 🟢 LONG  |  Confidence: 40%\n   Target: $1.6000  |  Invalidation: $1.2000\n\n💬 การวิเคราะห์ข้อมูลแสดงว่าราคาของ XRP/USDT มีแนวโน้มที่จะเพิ่มขึ้น แต่ความไม่แน่นอนยังคงอยู่ เนื่องจาก RSI Daily(14) และ MA25 บ่งชี้ถึงแนวโน้มที่ดี แต่ RSI 4h และ MA99 บ่งชี้ถึงแนวโน้มที่ไม่ดี\n\n────────────────────────────────────────────────────────────\n🔀 RECONCILIATION:\n   AI Direction  : LONG  (confidence 40%)\n   Neutral Score : +0.572  📈 bullish\n   Final Signal  : ✅ LONG\n",
+  "forecast": {
+    "expected_pct": 10.14,
+    "upper_pct": 10.14,
+    "lower_pct": -10.14,
+    "mode": "new",
+    "horizon_days": 3,
+    "horizon_source": "auto",
+    "accuracy_pct": 15.5
+  },
+  "neutral_score": null,
+  "timing": {
+    "best_session": "Asian Open (08:00-10:00 ICT)",
+    "best_session_short": "Asian Open",
+    "secondary_session": "US Open (20:30-22:00 ICT)",
+    "entry_condition": "เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม",
+    "avoid_window": "05:00-08:00 ICT (low-volume dead zone)",
+    "horizon_label": "Short-term (3 วัน) (auto)",
+    "urgency": "MEDIUM",
+    "urgency_display": "🟡 MEDIUM — ตั้ง alert รอ signal",
+    "hours_to_next": 8.7,
+    "next_window_str": "ใน 8.7 ชม."
+  },
+  "data_snapshot": {
+    "price": 1.4136,
+    "change_24h_pct": 0.99,
+    "change_7d_pct": null,
+    "rsi_14": 43.64,
+    "rsi_14_4h": 60.79,
+    "volume_spike": 1.03,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "F",
+    "opportunity_score": 29,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 45.87
+  }
+}

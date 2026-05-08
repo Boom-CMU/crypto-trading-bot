@@ -1,0 +1,295 @@
+{
+  "symbol": "KSM",
+  "pair": "KSMUSDT",
+  "timestamp": "2026-05-07T15:50:38.811067+00:00",
+  "data_source": "binance",
+  "price": {
+    "current": 6.08,
+    "open_24h": 4.99,
+    "high_24h": 7.7,
+    "low_24h": 4.97,
+    "change_24h_pct": 21.84,
+    "volume_24h_usdt": 18371265.83,
+    "volume_24h_base": 3070570.503,
+    "trades_24h": 109312
+  },
+  "history_30d": [
+    {
+      "date": "2026-04-08",
+      "open": 4.27,
+      "high": 4.3,
+      "low": 4.17,
+      "close": 4.17,
+      "volume": 78843.841
+    },
+    {
+      "date": "2026-04-09",
+      "open": 4.17,
+      "high": 4.29,
+      "low": 4.13,
+      "close": 4.21,
+      "volume": 92538.99
+    },
+    {
+      "date": "2026-04-10",
+      "open": 4.21,
+      "high": 4.37,
+      "low": 4.17,
+      "close": 4.31,
+      "volume": 116889.159
+    },
+    {
+      "date": "2026-04-11",
+      "open": 4.31,
+      "high": 4.36,
+      "low": 4.21,
+      "close": 4.25,
+      "volume": 76521.668
+    },
+    {
+      "date": "2026-04-12",
+      "open": 4.25,
+      "high": 4.26,
+      "low": 4.1,
+      "close": 4.12,
+      "volume": 79654.215
+    },
+    {
+      "date": "2026-04-13",
+      "open": 4.12,
+      "high": 4.33,
+      "low": 4.08,
+      "close": 4.29,
+      "volume": 104823.254
+    },
+    {
+      "date": "2026-04-14",
+      "open": 4.3,
+      "high": 4.31,
+      "low": 4.12,
+      "close": 4.14,
+      "volume": 137484.608
+    },
+    {
+      "date": "2026-04-15",
+      "open": 4.15,
+      "high": 4.31,
+      "low": 4.14,
+      "close": 4.29,
+      "volume": 123236.941
+    },
+    {
+      "date": "2026-04-16",
+      "open": 4.3,
+      "high": 4.8,
+      "low": 4.29,
+      "close": 4.7,
+      "volume": 335840.343
+    },
+    {
+      "date": "2026-04-17",
+      "open": 4.7,
+      "high": 6.66,
+      "low": 4.54,
+      "close": 4.96,
+      "volume": 2958462.157
+    },
+    {
+      "date": "2026-04-18",
+      "open": 4.96,
+      "high": 5.01,
+      "low": 4.64,
+      "close": 4.67,
+      "volume": 337620.066
+    },
+    {
+      "date": "2026-04-19",
+      "open": 4.66,
+      "high": 5.07,
+      "low": 4.59,
+      "close": 4.63,
+      "volume": 479646.562
+    },
+    {
+      "date": "2026-04-20",
+      "open": 4.63,
+      "high": 4.85,
+      "low": 4.57,
+      "close": 4.75,
+      "volume": 174383.001
+    },
+    {
+      "date": "2026-04-21",
+      "open": 4.76,
+      "high": 4.84,
+      "low": 4.65,
+      "close": 4.79,
+      "volume": 112922.047
+    },
+    {
+      "date": "2026-04-22",
+      "open": 4.79,
+      "high": 4.94,
+      "low": 4.73,
+      "close": 4.79,
+      "volume": 122150.729
+    },
+    {
+      "date": "2026-04-23",
+      "open": 4.79,
+      "high": 5.18,
+      "low": 4.7,
+      "close": 4.96,
+      "volume": 404649.43
+    },
+    {
+      "date": "2026-04-24",
+      "open": 4.96,
+      "high": 5.02,
+      "low": 4.81,
+      "close": 4.85,
+      "volume": 171223.582
+    },
+    {
+      "date": "2026-04-25",
+      "open": 4.85,
+      "high": 4.92,
+      "low": 4.69,
+      "close": 4.73,
+      "volume": 116968.413
+    },
+    {
+      "date": "2026-04-26",
+      "open": 4.72,
+      "high": 4.85,
+      "low": 4.68,
+      "close": 4.82,
+      "volume": 90834.52
+    },
+    {
+      "date": "2026-04-27",
+      "open": 4.83,
+      "high": 4.9,
+      "low": 4.66,
+      "close": 4.76,
+      "volume": 86751.692
+    },
+    {
+      "date": "2026-04-28",
+      "open": 4.75,
+      "high": 4.83,
+      "low": 4.71,
+      "close": 4.8,
+      "volume": 80692.767
+    },
+    {
+      "date": "2026-04-29",
+      "open": 4.8,
+      "high": 4.93,
+      "low": 4.62,
+      "close": 4.73,
+      "volume": 141334.875
+    },
+    {
+      "date": "2026-04-30",
+      "open": 4.73,
+      "high": 4.8,
+      "low": 4.63,
+      "close": 4.74,
+      "volume": 74311.199
+    },
+    {
+      "date": "2026-05-01",
+      "open": 4.75,
+      "high": 4.79,
+      "low": 4.69,
+      "close": 4.71,
+      "volume": 68361.821
+    },
+    {
+      "date": "2026-05-02",
+      "open": 4.71,
+      "high": 4.83,
+      "low": 4.69,
+      "close": 4.79,
+      "volume": 54563.711
+    },
+    {
+      "date": "2026-05-03",
+      "open": 4.8,
+      "high": 4.91,
+      "low": 4.72,
+      "close": 4.89,
+      "volume": 81637.807
+    },
+    {
+      "date": "2026-05-04",
+      "open": 4.89,
+      "high": 5.06,
+      "low": 4.78,
+      "close": 4.82,
+      "volume": 141178.177
+    },
+    {
+      "date": "2026-05-05",
+      "open": 4.83,
+      "high": 4.95,
+      "low": 4.8,
+      "close": 4.9,
+      "volume": 104000.09
+    },
+    {
+      "date": "2026-05-06",
+      "open": 4.91,
+      "high": 5.11,
+      "low": 4.88,
+      "close": 5.09,
+      "volume": 146213.062
+    },
+    {
+      "date": "2026-05-07",
+      "open": 5.1,
+      "high": 7.7,
+      "low": 5.0,
+      "close": 6.08,
+      "volume": 3018838.989
+    }
+  ],
+  "technicals": {
+    "rsi_14": 77.45,
+    "ma7": 5.04,
+    "ma25": 4.7872,
+    "ma99": 4.646768,
+    "above_ma25": true,
+    "above_ma99": true,
+    "atr_14": 0.37428571,
+    "high_period": 7.7,
+    "low_period": 3.73,
+    "pct_from_high": -21.04,
+    "price_structure": {
+      "phase": "UPTREND_PULLBACK",
+      "range_pct": 49.39,
+      "higher_lows": true,
+      "volume_trend": "increasing"
+    },
+    "volume_spike": 24.39,
+    "rsi_14_4h": 90.97
+  },
+  "market_data": {
+    "market_cap_usd": 109856084.06415825,
+    "volume_24h_usd": 107419161.96782225,
+    "change_24h_pct": 21.38383231064525,
+    "change_7d_pct": null
+  },
+  "bitkub": {
+    "listed": true,
+    "price_thb": 192.36,
+    "high_24h_thb": 244.96,
+    "low_24h_thb": 160.14,
+    "change_24h_pct": 18.74,
+    "volume_thb": 1741170.99,
+    "volume_base": 9009.25513502
+  },
+  "opportunity_score": 75,
+  "opportunity_grade": "A"
+}

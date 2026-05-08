@@ -1,27 +1,19 @@
 {
   "symbol": "LUNA",
   "pair": "LUNAUSDT",
-  "timestamp": "2026-04-30T06:33:23.995831+00:00",
+  "timestamp": "2026-05-01T06:04:00.634813+00:00",
   "data_source": "binance",
   "price": {
-    "current": 0.0626,
-    "open_24h": 0.0646,
-    "high_24h": 0.066,
-    "low_24h": 0.0605,
-    "change_24h_pct": -3.1,
-    "volume_24h_usdt": 2701306.98,
-    "volume_24h_base": 42385212.97,
-    "trades_24h": 16846
+    "current": 0.0686,
+    "open_24h": 0.0625,
+    "high_24h": 0.0723,
+    "low_24h": 0.0623,
+    "change_24h_pct": 9.76,
+    "volume_24h_usdt": 6278243.95,
+    "volume_24h_base": 91615646.58,
+    "trades_24h": 38024
   },
   "history_30d": [
-    {
-      "date": "2026-04-01",
-      "open": 0.0553,
-      "high": 0.0565,
-      "low": 0.0547,
-      "close": 0.0554,
-      "volume": 8593219.38
-    },
     {
       "date": "2026-04-02",
       "open": 0.0555,
@@ -249,41 +241,55 @@
     {
       "date": "2026-04-30",
       "open": 0.0637,
-      "high": 0.0648,
+      "high": 0.0723,
       "low": 0.0623,
-      "close": 0.0626,
-      "volume": 7997648.25
+      "close": 0.0693,
+      "volume": 87183451.56
+    },
+    {
+      "date": "2026-05-01",
+      "open": 0.0692,
+      "high": 0.0703,
+      "low": 0.0678,
+      "close": 0.0686,
+      "volume": 11913458.86
     }
   ],
   "technicals": {
-    "rsi_14": 54.37,
-    "ma7": 0.063857,
-    "ma25": 0.058884,
-    "ma99": 0.062662,
+    "rsi_14": 62.07,
+    "ma7": 0.0657,
+    "ma25": 0.059724,
+    "ma99": 0.06262,
     "above_ma25": true,
-    "above_ma99": false,
-    "atr_14": 0.00471429,
+    "above_ma99": true,
+    "atr_14": 0.00491429,
     "high_period": 0.0824,
     "low_period": 0.0521,
-    "pct_from_high": -24.03,
+    "pct_from_high": -16.75,
     "price_structure": {
       "phase": "UPTREND_PULLBACK",
-      "range_pct": 24.02,
+      "range_pct": 29.05,
       "higher_lows": true,
       "volume_trend": "decreasing"
     },
-    "volume_spike": 1.0,
-    "rsi_14_4h": 40.2
+    "volume_spike": 1.95,
+    "rsi_14_4h": 57.4
+  },
+  "market_data": {
+    "market_cap_usd": 48672977.99443388,
+    "volume_24h_usd": 38519656.57278793,
+    "change_24h_pct": 9.420298918159855,
+    "change_7d_pct": null
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 0.002255,
-    "high_24h_thb": 0.002333,
-    "low_24h_thb": 0.0021,
-    "change_24h_pct": 6.37,
-    "volume_thb": 115453942.97,
-    "volume_base": 51385835824.8877
+    "price_thb": 0.002412,
+    "high_24h_thb": 0.0025,
+    "low_24h_thb": 0.002231,
+    "change_24h_pct": 7.15,
+    "volume_thb": 182883826.98,
+    "volume_base": 76489930804.82793
   },
-  "opportunity_score": 34,
-  "opportunity_grade": "F"
+  "opportunity_score": 59,
+  "opportunity_grade": "C+"
 }

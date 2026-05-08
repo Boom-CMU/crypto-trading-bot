@@ -1,10 +1,6 @@
 name: Daily Crypto Scan → Telegram
 
 on:
-  schedule:
-    # 02:15 UTC = 09:15 Bangkok / 12:15 UTC = 19:15 Bangkok (UTC+7)
-    # หลีกเลี่ยง :00 UTC เพื่อลด GitHub Actions queue delay
-    - cron: "15 2,12 * * *"
   workflow_dispatch:  # รันมือได้จาก GitHub Actions tab
 
 jobs:

@@ -1,37 +1,41 @@
 {
   "symbol": "APE",
-  "timestamp": "2026-04-28T21:25:03.895876Z",
-  "tier_used": "Tier 3 — Technical Rules",
-  "analysis": "════════════════════════════════════════════════════════════\n🚀 APE/USDT — วิเคราะห์โดย Tier 3 — Technical Rules\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.161600\n   1h: -0.37%  |  24h: +14.94%  |  7d: +0.00%\n   Volume 24h: $33.62M  |  vs Average: +148%\n\n📈 คะแนนย่อย:\n  Momentum        : 7.5/10\n  Upside Potential: 5.5/10\n  Technical       : 8.0/10\n  Risk/Volatility : 4.0/10\n\n🎯 โอกาส:\n  ขึ้น: 61%  |  ลง: 39%\n  ถึง Target $0.344429: +113.1%\n  ATH Distance: -41.9%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+68.99% / -5.85%]\n\n🏆 คะแนนความคุ้มค่า: 72/100 — Good Opportunity  |  ความแม่นยำ: ~18%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.161600\n  Stop Loss  : $0.137360  (-15.0%) ← ไม่เกิน 15%\n  TP1        : $0.253014  (+56.6%) ← เป้าแรก ทำกำไรบางส่วน\n  TP2        : $0.344429  (+113.1%) ← เป้าหลัก\n  TP3        : $0.466314  (+188.6%) ← moon target\n  R/R Ratio  : 1:7.5\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.140000  —  แนวต้าน: $0.191700\n  จังหวะเข้า : volume spike แล้ว — เข้าได้แต่ระวัง overextension\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: ⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน  | RSI 4h neutral — รอทิศทาง breakout\n  หลีกเลี่ยง  : ทุก session จนกว่า structure จะชัดเจน\n  ระดับเร่งด่วน: 🟢 LOW — รอ setup ดีกว่า\n  หน้าต่างถัดไป: US Open ใน 16.1 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n📊 SIGNAL BREAKDOWN (Tier 3):  Bull: 8  |  Bear: 1\n  ⚡ RSI 72.3 — Momentum แรง (ยังไม่ over)\n  ✅ RSI 4h 57.5 — Intraday momentum บวก\n  🔥 Volume spike ×2.5 — Strong buying interest\n  ✅ ราคา > MA99 — Bull market structure\n  ✅ ราคา > MA25 — Short-term uptrend\n  ⚠️ Phase: VOLATILE — ไม่มี structure ระวัง\n  📊 Volume trend: เพิ่มขึ้น — confirms momentum\n\n📍 PRICE STRUCTURE:\n  Phase       : VOLATILE_NO_STRUCTURE\n  Range       : 118.6%\n  Higher Lows : False\n  Volume Trend: increasing\n  Volume Spike: ×2.48\n\n🇹🇭 ✅ Bitkub: ฿5.2500 THB\n\n⚠️ Tier 3 = technical only — ไม่รู้เรื่อง news/catalyst\n   เพิ่ม ANTHROPIC_API_KEY หรือ GROQ_API_KEY เพื่อ AI analysis",
+  "timestamp": "2026-05-02T04:00:46.124921Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 APE/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.174600\n   1h: -0.17%  |  7d: +0.00%\n   Volume 24h: $13.91M  |  vs Average: -24%\n\n📈 คะแนนย่อย:\n  Momentum        : 5.0/10\n  Upside Potential: 4.5/10\n  Technical       : 8.0/10\n  Risk/Volatility : 4.0/10\n\n🎯 โอกาส:\n  ขึ้น: 57%  |  ลง: 43%\n  ถึง Target $0.253046: +107.8%\n  ATH Distance: -37.2%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+61.45% / -6.45%]\n\n🏆 คะแนนความคุ้มค่า: 62/100 — Speculative  |  ความแม่นยำ: ~15%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : 👀 Hold (Speculative)\n  Entry      : $0.174600\n  Target     : $0.253046  (+44.9%)  ↑\n  Invalidation: $0.127532  (-27.0%)\n  R/R Ratio  : 1:1.7\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.155700  —  แนวต้าน: $0.184800\n  จังหวะเข้า : รอ ~1-2 ชม. — ยังไม่มี breakout สัญญาณ รอ volume confirm\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Short-term (3 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: ⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน\n  หลีกเลี่ยง  : ทุก session จนกว่า structure จะชัดเจน\n  ระดับเร่งด่วน: 🟢 LOW — รอ setup ดีกว่า\n  หน้าต่างถัดไป: US Open ใน 9.5 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n📈 Bull case (40%): ราคาอาจเพิ่มขึ้นเนื่องจากราคาปัจจุบันอยู่เหนือ MA25 และ MA99\n   • MA25: $0.119156  ✅ ABOVE\n   • MA99: $0.114484  ✅ ABOVE\n\n📉 Bear case (30%): ราคาอาจลดลงเนื่องจากราคาปัจจุบันอยู่ใกล้กับระดับ overbought ของ RSI\n   • RSI Daily(14): 68.1\n   • RSI 4h: 71.43\n\n⚖️  Base case (30%): ราคาอาจไม่มีการเปลี่ยนแปลงมากนักเนื่องจากราคาอยู่ในระยะที่คาดว่าจะมีการเคลื่อนไหวน้อย\n\n🎯 Direction: 🟢 LONG  |  Confidence: 40%\n   Target: $0.195000  |  Invalidation: $0.155000\n\n💬 การวิเคราะห์ข้อมูลทางเทคนิคและความผันผวนของราคาทำให้เห็นว่าราคาอาจมีการเคลื่อนไหวในระยะสั้น แต่ด้วยการวิเคราะห์จาก MA25 และ MA99 ที่อยู่เหนือราคาปัจจุบัน ทำให้เราเชื่อว่าราคาอาจเพิ่มขึ้นในระยะสั้น\n\n────────────────────────────────────────────────────────────\n🔀 RECONCILIATION:\n   AI Direction  : LONG  (confidence 40%)\n   Neutral Score : +0.621  📈 bullish\n   Final Signal  : ✅ LONG\n",
   "forecast": {
-    "expected_pct": 40.0,
+    "expected_pct": 5.95,
+    "upper_pct": 5.95,
+    "lower_pct": -5.95,
+    "mode": "new",
     "horizon_days": 3,
     "horizon_source": "auto",
-    "accuracy_pct": 18.3
+    "accuracy_pct": 14.6
   },
+  "neutral_score": null,
   "timing": {
     "best_session": "US Open (20:30-22:00 ICT)",
     "best_session_short": "US Open",
     "secondary_session": "Asian Open (08:00-10:00 ICT)",
-    "entry_condition": "⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน  | RSI 4h neutral — รอทิศทาง breakout",
+    "entry_condition": "⚠️ ไม่แนะนำ — รอ structure ชัดเจนก่อน",
     "avoid_window": "ทุก session จนกว่า structure จะชัดเจน",
     "horizon_label": "Short-term (3 วัน) (auto)",
     "urgency": "LOW",
     "urgency_display": "🟢 LOW — รอ setup ดีกว่า",
-    "hours_to_next": 16.1,
-    "next_window_str": "ใน 16.1 ชม."
+    "hours_to_next": 9.5,
+    "next_window_str": "ใน 9.5 ชม."
   },
   "data_snapshot": {
-    "price": 0.1616,
-    "change_24h_pct": 14.94,
+    "price": 0.1746,
+    "change_24h_pct": 9.4,
     "change_7d_pct": null,
-    "rsi_14": 72.28,
-    "rsi_14_4h": 57.46,
-    "volume_spike": 2.48,
+    "rsi_14": 68.1,
+    "rsi_14_4h": 71.43,
+    "volume_spike": 0.76,
     "phase": "VOLATILE_NO_STRUCTURE",
-    "opportunity_grade": "B",
-    "opportunity_score": 51,
+    "opportunity_grade": "F",
+    "opportunity_score": 29,
     "bitkub_listed": true,
-    "bitkub_price_thb": 5.25
+    "bitkub_price_thb": 5.73
   }
 }

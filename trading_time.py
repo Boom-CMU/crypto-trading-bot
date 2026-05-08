@@ -137,6 +137,10 @@ def recommend_trading_time(
     else:
         urgency = "MEDIUM"
 
+    # Fix 3: RSI 4h > 80 (overbought) must not show HIGH urgency
+    if rsi_4h is not None and rsi_4h > 80 and urgency == "HIGH":
+        urgency = "MEDIUM"
+
     # ── Best session selection ──────────────────────────────────
     if is_native:
         # Thai-native Bitkub coins → Asian traders dominate

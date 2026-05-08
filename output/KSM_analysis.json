@@ -1,0 +1,41 @@
+{
+  "symbol": "KSM",
+  "timestamp": "2026-05-07T15:50:44.381832Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 KSM/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $6.0800\n   1h: +2.53%  |  7d: +0.00%\n   Volume 24h: $18.37M  |  vs Average: +2339%\n\n📈 คะแนนย่อย:\n  Momentum        : 10.0/10\n  Upside Potential: 6.0/10\n  Technical       : 7.5/10\n  Risk/Volatility : 5.0/10\n\n🎯 โอกาส:\n  ขึ้น: 74%  |  ลง: 26%\n  ถึง Target $7.0157: +36.9%\n  ATH Distance: -21.0%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+27.31% / -2.39%]\n\n🏆 คะแนนความคุ้มค่า: 78/100 — Good Opportunity  |  ความแม่นยำ: ~16%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $6.0800\n  Target     : $7.0157  (+15.4%)  ↑\n  Invalidation: $5.5186  (-9.2%)\n  R/R Ratio  : 1:1.7\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $4.9700  —  แนวต้าน: $7.7000\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $4.9700\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Day Trade (1 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน\n  หลีกเลี่ยง  : 05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT\n  ระดับเร่งด่วน: 🔴 HIGH — เข้าได้เลย อย่ารอนาน\n  หน้าต่างถัดไป: US Open ใน 21.7 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n📈 Bull case (45%): ราคาของ KSM/USDT มีแนวโน้มที่จะเพิ่มขึ้นเนื่องจากมี Volume Spike ที่สูงถึง 24.39 เท่าของเฉลี่ย 14 วัน และ RSI Daily(14) อยู่ที่ 77.45 ซึ่งแสดงถึงการเพิ่มขึ้นของความต้องการ\n   • Volume Spike ×24.39\n   • RSI Daily(14) 77.45\n   • MA7, MA25, MA99 อยู่เหนือราคาปัจจุบัน\n\n📉 Bear case (30%): ราคาของ KSM/USDT มีแนวโน้มที่จะลดลงเนื่องจากราคาอยู่ในระดับสูงและ RSI 4h อยู่ที่ 90.97 ซึ่งแสดงถึงการซื้อขายที่มากเกินไป\n   • RSI 4h 90.97\n   • ราคาปัจจุบันอยู่ใกล้กับ Period High\n   • ช่วงราคาที่คาดในอีก 1 วันคือ -4.0% ถึง +3.4%\n\n⚖️  Base case (25%): ราคาของ KSM/USDT จะยังคงไม่มีการเปลี่ยนแปลงมากนักเนื่องจากราคาอยู่ในระดับที่มีแรงซื้อและขายที่สมดุล\n\n🎯 Direction: 🟢 LONG  |  Confidence: 45%\n   Target: $6.8000  |  Invalidation: $5.5000\n\n💬 การวิเคราะห์ข้อมูลแสดงให้เห็นว่า ราคาของ KSM/USDT มีแนวโน้มที่จะเพิ่มขึ้นเนื่องจากมี Volume Spike ที่สูงและ RSI Daily(14) อยู่ในระดับที่แสดงถึงการเพิ่มขึ้นของความต้องการ แต่ก็ยังมีความเสี่ยงของการลดลงเนื่องจากราคาอยู่ในระดับสูง\n\n────────────────────────────────────────────────────────────\n🔀 RECONCILIATION:\n   AI Direction  : LONG  (confidence 45%)\n   Neutral Score : +0.800  📈 bullish\n   Final Signal  : ✅ LONG\n",
+  "forecast": {
+    "expected_pct": 3.39,
+    "upper_pct": 3.39,
+    "lower_pct": -3.98,
+    "mode": "new",
+    "horizon_days": 1,
+    "horizon_source": "auto",
+    "accuracy_pct": 16.0
+  },
+  "neutral_score": null,
+  "timing": {
+    "best_session": "US Open (20:30-22:00 ICT)",
+    "best_session_short": "US Open",
+    "secondary_session": "Asian Open (08:00-10:00 ICT)",
+    "entry_condition": "เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน",
+    "avoid_window": "05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT",
+    "horizon_label": "Day Trade (1 วัน) (auto)",
+    "urgency": "HIGH",
+    "urgency_display": "🔴 HIGH — เข้าได้เลย อย่ารอนาน",
+    "hours_to_next": 21.7,
+    "next_window_str": "ใน 21.7 ชม."
+  },
+  "data_snapshot": {
+    "price": 6.08,
+    "change_24h_pct": 21.84,
+    "change_7d_pct": null,
+    "rsi_14": 77.45,
+    "rsi_14_4h": 90.97,
+    "volume_spike": 24.39,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "A",
+    "opportunity_score": 75,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 192.36
+  }
+}

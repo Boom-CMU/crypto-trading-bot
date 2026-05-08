@@ -1,51 +1,19 @@
 {
   "symbol": "APE",
   "pair": "APEUSDT",
-  "timestamp": "2026-04-28T21:25:01.192912+00:00",
+  "timestamp": "2026-05-02T04:00:41.607598+00:00",
   "data_source": "binance",
   "price": {
-    "current": 0.1616,
-    "open_24h": 0.1406,
-    "high_24h": 0.1917,
-    "low_24h": 0.14,
-    "change_24h_pct": 14.94,
-    "volume_24h_usdt": 33622304.0,
-    "volume_24h_base": 197263220.85,
-    "trades_24h": 211469
+    "current": 0.1746,
+    "open_24h": 0.1596,
+    "high_24h": 0.1848,
+    "low_24h": 0.1557,
+    "change_24h_pct": 9.4,
+    "volume_24h_usdt": 13907812.45,
+    "volume_24h_base": 80437689.21,
+    "trades_24h": 98246
   },
   "history_30d": [
-    {
-      "date": "2026-03-30",
-      "open": 0.0834,
-      "high": 0.0869,
-      "low": 0.0832,
-      "close": 0.084,
-      "volume": 13313055.13
-    },
-    {
-      "date": "2026-03-31",
-      "open": 0.084,
-      "high": 0.0876,
-      "low": 0.0823,
-      "close": 0.0862,
-      "volume": 21480147.29
-    },
-    {
-      "date": "2026-04-01",
-      "open": 0.0862,
-      "high": 0.0973,
-      "low": 0.085,
-      "close": 0.0888,
-      "volume": 32577904.29
-    },
-    {
-      "date": "2026-04-02",
-      "open": 0.0888,
-      "high": 0.0898,
-      "low": 0.0815,
-      "close": 0.0828,
-      "volume": 20046449.72
-    },
     {
       "date": "2026-04-03",
       "open": 0.0829,
@@ -251,39 +219,71 @@
       "open": 0.1438,
       "high": 0.1917,
       "low": 0.14,
-      "close": 0.1616,
-      "volume": 194658016.01
+      "close": 0.1574,
+      "volume": 200045845.54
+    },
+    {
+      "date": "2026-04-29",
+      "open": 0.1576,
+      "high": 0.1591,
+      "low": 0.1411,
+      "close": 0.1467,
+      "volume": 48034137.59
+    },
+    {
+      "date": "2026-04-30",
+      "open": 0.1467,
+      "high": 0.1667,
+      "low": 0.145,
+      "close": 0.1597,
+      "volume": 88286035.18
+    },
+    {
+      "date": "2026-05-01",
+      "open": 0.1596,
+      "high": 0.1848,
+      "low": 0.1557,
+      "close": 0.1794,
+      "volume": 84803337.11
+    },
+    {
+      "date": "2026-05-02",
+      "open": 0.1793,
+      "high": 0.1829,
+      "low": 0.1733,
+      "close": 0.1746,
+      "volume": 6589588.01
     }
   ],
   "technicals": {
-    "rsi_14": 72.28,
-    "ma7": 0.141314,
-    "ma25": 0.106744,
-    "ma99": 0.115497,
+    "rsi_14": 68.1,
+    "ma7": 0.158114,
+    "ma25": 0.119156,
+    "ma99": 0.114484,
     "above_ma25": true,
     "above_ma99": true,
-    "atr_14": 0.03047143,
+    "atr_14": 0.03137857,
     "high_period": 0.278,
     "low_period": 0.0811,
-    "pct_from_high": -41.87,
+    "pct_from_high": -37.19,
     "price_structure": {
       "phase": "VOLATILE_NO_STRUCTURE",
       "range_pct": 118.6,
       "higher_lows": false,
       "volume_trend": "increasing"
     },
-    "volume_spike": 2.48,
-    "rsi_14_4h": 57.46
+    "volume_spike": 0.76,
+    "rsi_14_4h": 71.43
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 5.25,
-    "high_24h_thb": 6.22,
-    "low_24h_thb": 4.2,
-    "change_24h_pct": 13.88,
-    "volume_thb": 11548932.9,
-    "volume_base": 2051044.49009137
+    "price_thb": 5.73,
+    "high_24h_thb": 5.95,
+    "low_24h_thb": 5.05,
+    "change_24h_pct": 10.62,
+    "volume_thb": 4127057.64,
+    "volume_base": 735840.99627302
   },
-  "opportunity_score": 51,
-  "opportunity_grade": "B"
+  "opportunity_score": 29,
+  "opportunity_grade": "F"
 }

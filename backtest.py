@@ -119,39 +119,64 @@ def estimate_horizon(phase: str, vol_spike: float) -> int:
     return 3        # default
 
 
-def calc_expected_pct(
+def _calc_expected_pct_legacy(
     chg_24h: float,
     chg_7d: float,
     rsi_4h: float | None,
     vol_spike: float,
     horizon: int,
 ) -> float:
-    """
-    Momentum-based expected % change ใน horizon วัน
-    ใช้ 24h change (short-term signal) + 7d daily rate (trend signal)
-    ถ่วงน้ำหนักตาม horizon: สั้น → เน้น 24h, ยาว → เน้น 7d daily rate
-    """
+    """Legacy momentum extrapolation (bullish-biased). Kept for USE_LEGACY_FORECASTER A/B."""
     daily_7d = chg_7d / 7.0 if chg_7d else 0.0
-
-    # alpha = น้ำหนัก 24h, ลดลงเมื่อ horizon นานขึ้น (min 0.2)
     alpha = max(0.2, min(0.8, 1.0 - (horizon - 1) * 0.09))
     beta  = 1.0 - alpha
-
     daily_rate = alpha * chg_24h + beta * daily_7d
     raw        = daily_rate * horizon
-
-    # Volume spike boost/penalty
     if vol_spike >= 3.0:   raw *= 1.30
     elif vol_spike >= 2.0: raw *= 1.20
     elif vol_spike >= 1.5: raw *= 1.10
     elif vol_spike < 0.8:  raw *= 0.80
-
-    # RSI 4h boost สำหรับ short horizon เท่านั้น
     if horizon <= 3 and rsi_4h is not None:
         if rsi_4h >= 65:   raw *= 1.10
         elif rsi_4h < 40:  raw *= 0.85
-
     return round(max(-30.0, min(40.0, raw)), 2)
+
+
+def calc_expected_pct(
+    coin: str,
+    horizon_days: int,
+    rsi: float | None,
+    return_24h_frac: float,
+    calibration: dict,
+) -> dict:
+    """
+    Returns symmetric volatility-based expected range in PERCENTAGE.
+    {"upper": float, "lower": float}  e.g. upper=4.3 means +4.3%
+
+    Bounds derive from 2× realized sigma (data-driven, never hardcoded ±30/40).
+    Only dampens — never boosts — so |upper| can only shrink, never grow past 2σ.
+    Justification for |upper| > |lower|: rsi < 30 dampens downside (oversold).
+    """
+    from calibration import get_sigma
+
+    sigma  = get_sigma(coin, horizon_days, calibration)   # fraction e.g. 0.043
+    upper  = +2.0 * sigma * 100   # → percentage
+    lower  = -2.0 * sigma * 100
+
+    # Mean-reversion dampening: large 24h move → continuation less likely
+    daily_sigma = get_sigma(coin, 1, calibration)
+    if abs(return_24h_frac) > 1.5 * daily_sigma:
+        upper *= 0.5
+        lower *= 0.5
+
+    # RSI dampening — symmetric, only reduces relevant side, never boosts
+    if rsi is not None:
+        if rsi > 70:
+            upper *= 0.85           # overbought → shrink upside range
+        if rsi < 30:
+            lower *= 0.85           # oversold → shrink downside range (magnitude)
+
+    return {"upper": round(upper, 2), "lower": round(lower, 2)}
 
 
 # ─────────────────────────────────────────────────────────────
@@ -193,6 +218,7 @@ def backtest_symbol(
     symbol: str,
     klines: list,
     fixed_horizon: int | None = None,
+    calibration: dict | None = None,
 ) -> list[dict]:
     """
     Walk through klines bar-by-bar ตั้งแต่ MIN_HISTORY_BARS
@@ -238,7 +264,11 @@ def backtest_symbol(
         horizon = fixed_horizon if fixed_horizon else estimate_horizon(phase, vol_spike)
 
         # Expected % สำหรับ horizon นี้
-        expected = calc_expected_pct(chg_24h, chg_7d, rsi_4h_approx, vol_spike, horizon)
+        from config import USE_LEGACY_FORECASTER
+        if USE_LEGACY_FORECASTER or calibration is None:
+            expected = _calc_expected_pct_legacy(chg_24h, chg_7d, rsi_4h_approx, vol_spike, horizon)
+        else:
+            expected = calc_expected_pct(symbol, horizon, rsi, chg_24h / 100.0, calibration)
 
         # Actual return หลัง horizon วัน (ดูจาก closing price)
         if i + horizon >= len(klines):
@@ -284,6 +314,14 @@ def backtest_symbol(
         }
         composite = _calc_all_scores(data_dict)["composite"]
 
+        # Store expected_pct as scalar for backward compat; keep full range when available
+        if isinstance(expected, dict):
+            expected_pct_val   = expected.get("upper", 0)
+            expected_range_val = expected
+        else:
+            expected_pct_val   = expected
+            expected_range_val = None
+
         results.append({
             "symbol":         symbol,
             "grade":          _opportunity_grade(composite),
@@ -294,7 +332,8 @@ def backtest_symbol(
             "vol_spike_band": _vol_spike_band(vol_spike),
             "ma_align":       _ma_align_label(above_ma25, above_ma99),
             "horizon":        horizon,
-            "expected_pct":   expected,
+            "expected_pct":   expected_pct_val,
+            "expected_range": expected_range_val,
             "actual_pct":     round(actual_pct, 2),
             "outcome":        outcome,
         })
@@ -352,6 +391,19 @@ def run_backtest(
     if symbols is None:
         symbols = DEFAULT_SYMBOLS
 
+    # Load calibration once for new forecaster (skip if legacy mode or file missing)
+    from config import USE_LEGACY_FORECASTER
+    _calibration: dict | None = None
+    if not USE_LEGACY_FORECASTER:
+        try:
+            from calibration import CALIBRATION_FILE
+            if os.path.exists(CALIBRATION_FILE):
+                import json as _json
+                with open(CALIBRATION_FILE, encoding="utf-8") as _f:
+                    _calibration = _json.load(_f)
+        except Exception as _e:
+            log.warning("Could not load calibration (%s) — using legacy forecaster", _e)
+
     all_results: list[dict] = []
 
     for sym in symbols:
@@ -367,7 +419,7 @@ def run_backtest(
                 print("⚠️  ข้อมูลไม่พอ ข้ามไป")
             continue
 
-        results = backtest_symbol(sym, klines, fixed_horizon)
+        results = backtest_symbol(sym, klines, fixed_horizon, _calibration)
         all_results.extend(results)
 
         if verbose:

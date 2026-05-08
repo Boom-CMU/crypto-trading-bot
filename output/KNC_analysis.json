@@ -1,0 +1,41 @@
+{
+  "symbol": "KNC",
+  "timestamp": "2026-05-02T15:18:56.071977Z",
+  "tier_used": "Tier 2 — Groq (llama-3.3-70b-versatile)",
+  "analysis": "════════════════════════════════════════════════════════════\n🚀 KNC/USDT — วิเคราะห์โดย Tier 2 — Groq (llama-3.3-70b-versatile)\n════════════════════════════════════════════════════════════\n💰 ราคา: $0.164900\n   1h: -2.37%  |  7d: +0.00%\n   Volume 24h: $8.96M  |  vs Average: +2952%\n\n📈 คะแนนย่อย:\n  Momentum        : 10.0/10\n  Upside Potential: 4.5/10\n  Technical       : 9.5/10\n  Risk/Volatility : 4.0/10\n\n🎯 โอกาส:\n  ขึ้น: 79%  |  ลง: 21%\n  ถึง Target $0.187596: +33.0%\n  ATH Distance: -27.9%  ← upside ถ้าถึง ATH\n\n⚡ Expected Value (Asymmetric): [+26.07% / -1.74%]\n\n🏆 คะแนนความคุ้มค่า: 76/100 — Good Opportunity  |  ความแม่นยำ: ~23%\n\n────────────────────────────────────────────────────────────\n📋 คำแนะนำการเทรด:\n  สัญญาณ    : ✅ Buy\n  Entry      : $0.164900\n  Target     : $0.187596  (+13.8%)  ↑\n  Invalidation: $0.151282  (-8.3%)\n  R/R Ratio  : 1:1.7\n  Position   : ไม่เกิน 10% ของพอร์ต ต่อ coin 1 ตัว\n  แนวรับ     : $0.137600  —  แนวต้าน: $0.190000\n  จังหวะเข้า : รอ pullback ~15-30 นาที — retest แนวรับ $0.137600\n────────────────────────────────────────────────────────────\n⏰ แนะนำเวลาซื้อขาย (ICT = เวลาไทย UTC+7):\n  กรอบเวลา    : Day Trade (1 วัน) (auto)\n  เซสชั่นหลัก : US Open (20:30-22:00 ICT)  ★\n  เซสชั่นรอง  : Asian Open (08:00-10:00 ICT)\n  เงื่อนไขเข้า: เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน\n  หลีกเลี่ยง  : 05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT\n  ระดับเร่งด่วน: 🔴 HIGH — เข้าได้เลย อย่ารอนาน\n  หน้าต่างถัดไป: US Open ใน 22.2 ชม.\n════════════════════════════════════════════════════════════\n⚠️ Crypto มีความผันผวนสูง ใช้ประกอบการตัดสินใจเท่านั้น\n────────────────────────────────────────────────────────────\n🦙 AI ANALYSIS (Groq Llama3):\n📈 Bull case (55%): ราคาของ KNC/USDT มีแนวโน้มที่จะเพิ่มขึ้นเนื่องจากราคาอยู่เหนือ MA25 และ MA99 และ RSI Daily(14) อยู่ที่ 66.37 ซึ่งแสดงถึงการเคลื่อนไหวของราคาที่มีพลัง\n   • ราคาอยู่เหนือ MA25 และ MA99\n   • RSI Daily(14) อยู่ที่ 66.37\n\n📉 Bear case (30%): ราคาของ KNC/USDT มีแนวโน้มที่จะลดลงเนื่องจากราคาอยู่ใกล้กับ Period High และ RSI 4h อยู่ที่ 75.05 ซึ่งแสดงถึงการซื้อขายที่มากเกินไป\n   • ราคาอยู่ใกล้กับ Period High\n   • RSI 4h อยู่ที่ 75.05\n\n⚖️  Base case (15%): ราคาของ KNC/USDT จะยังคงเคลื่อนไหวในกรอบที่คาดไว้ -4.0% ถึง +4.0% ใน 1 วัน\n\n🎯 Direction: 🟢 LONG  |  Confidence: 55%\n   Target: $0.185000  |  Invalidation: $0.145000\n\n💬 การวิเคราะห์ข้อมูลแสดงให้เห็นว่าราคาของ KNC/USDT มีแนวโน้มที่จะเพิ่มขึ้นเนื่องจากราคาอยู่เหนือ MA25 และ MA99 และ RSI Daily(14) อยู่ที่ 66.37 อย่างไรก็ตาม ยังมีความเสี่ยงของการลดลงเนื่องจากราคาอยู่ใกล้กับ Period High และ RSI 4h อยู่ที่ 75.05 ดังนั้น จึงต้องติดตามการเคลื่อนไหวของราคาอย่างใกล้ชิด\n\n────────────────────────────────────────────────────────────\n🔀 RECONCILIATION:\n   AI Direction  : LONG  (confidence 55%)\n   Neutral Score : +0.800  📈 bullish\n   Final Signal  : ✅ LONG\n",
+  "forecast": {
+    "expected_pct": 3.98,
+    "upper_pct": 3.98,
+    "lower_pct": -3.98,
+    "mode": "new",
+    "horizon_days": 1,
+    "horizon_source": "auto",
+    "accuracy_pct": 22.6
+  },
+  "neutral_score": null,
+  "timing": {
+    "best_session": "US Open (20:30-22:00 ICT)",
+    "best_session_short": "US Open",
+    "secondary_session": "Asian Open (08:00-10:00 ICT)",
+    "entry_condition": "เข้าที่แนวรับ / retest MA25 หรือ breakout level เดิม  | ⚠️ RSI 4h overbought — รอ pullback ก่อน",
+    "avoid_window": "05:00-08:00 ICT (dead zone) | หลีกเลี่ยง London fake-out 15:00-16:00 ICT",
+    "horizon_label": "Day Trade (1 วัน) (auto)",
+    "urgency": "HIGH",
+    "urgency_display": "🔴 HIGH — เข้าได้เลย อย่ารอนาน",
+    "hours_to_next": 22.2,
+    "next_window_str": "ใน 22.2 ชม."
+  },
+  "data_snapshot": {
+    "price": 0.1649,
+    "change_24h_pct": 18.46,
+    "change_7d_pct": null,
+    "rsi_14": 66.37,
+    "rsi_14_4h": 75.05,
+    "volume_spike": 30.52,
+    "phase": "UPTREND_PULLBACK",
+    "opportunity_grade": "A",
+    "opportunity_score": 79,
+    "bitkub_listed": true,
+    "bitkub_price_thb": 5.3
+  }
+}

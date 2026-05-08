@@ -11,7 +11,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = "claude-sonnet-4-6"
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = "llama3-70b-8192"
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 OUTPUT_DIR = "output"
@@ -34,6 +34,10 @@ SUPPORTED_SYMBOLS = [
 SCANNER_MIN_VOLUME_THB = 1_000_000   # 1M THB minimum volume
 SCANNER_MIN_CHANGE_PCT = 2.0         # minimum 2% 24h move
 SCANNER_TOP_N = 15                   # display top N results
+
+
+# Feature flag: set to "1" to use legacy (biased) forecaster for A/B comparison
+USE_LEGACY_FORECASTER = os.getenv("USE_LEGACY_FORECASTER", "0") == "1"
 
 
 def get_analysis_tier() -> str:

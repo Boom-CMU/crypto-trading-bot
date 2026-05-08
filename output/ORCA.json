@@ -1,43 +1,19 @@
 {
   "symbol": "ORCA",
   "pair": "ORCAUSDT",
-  "timestamp": "2026-04-28T21:24:44.339711+00:00",
+  "timestamp": "2026-05-01T20:26:11.200141+00:00",
   "data_source": "binance",
   "price": {
-    "current": 1.639,
-    "open_24h": 1.473,
-    "high_24h": 1.876,
-    "low_24h": 1.411,
-    "change_24h_pct": 11.27,
-    "volume_24h_usdt": 35662095.29,
-    "volume_24h_base": 22266115.07,
-    "trades_24h": 311950
+    "current": 1.999,
+    "open_24h": 1.606,
+    "high_24h": 2.3,
+    "low_24h": 1.593,
+    "change_24h_pct": 24.47,
+    "volume_24h_usdt": 41785764.1,
+    "volume_24h_base": 21168565.82,
+    "trades_24h": 303064
   },
   "history_30d": [
-    {
-      "date": "2026-03-30",
-      "open": 0.827,
-      "high": 0.865,
-      "low": 0.824,
-      "close": 0.84,
-      "volume": 207567.96
-    },
-    {
-      "date": "2026-03-31",
-      "open": 0.841,
-      "high": 0.905,
-      "low": 0.834,
-      "close": 0.904,
-      "volume": 1465905.75
-    },
-    {
-      "date": "2026-04-01",
-      "open": 0.9,
-      "high": 0.912,
-      "low": 0.87,
-      "close": 0.878,
-      "volume": 1349305.71
-    },
     {
       "date": "2026-04-02",
       "open": 0.878,
@@ -251,39 +227,63 @@
       "open": 1.539,
       "high": 1.876,
       "low": 1.434,
-      "close": 1.639,
-      "volume": 18687935.01
+      "close": 1.632,
+      "volume": 19366323.49
+    },
+    {
+      "date": "2026-04-29",
+      "open": 1.63,
+      "high": 1.774,
+      "low": 1.522,
+      "close": 1.632,
+      "volume": 10442606.56
+    },
+    {
+      "date": "2026-04-30",
+      "open": 1.632,
+      "high": 2.17,
+      "low": 1.479,
+      "close": 2.15,
+      "volume": 10376678.48
+    },
+    {
+      "date": "2026-05-01",
+      "open": 2.15,
+      "high": 2.3,
+      "low": 1.877,
+      "close": 1.999,
+      "volume": 15975029.23
     }
   ],
   "technicals": {
-    "rsi_14": 91.27,
-    "ma7": 1.204571,
-    "ma25": 0.98096,
-    "ma99": 0.943343,
+    "rsi_14": 84.67,
+    "ma7": 1.629143,
+    "ma25": 1.11188,
+    "ma99": 0.969646,
     "above_ma25": true,
     "above_ma99": true,
-    "atr_14": 0.22464286,
-    "high_period": 2.117,
+    "atr_14": 0.31342857,
+    "high_period": 2.3,
     "low_period": 0.65,
-    "pct_from_high": -22.58,
+    "pct_from_high": -13.09,
     "price_structure": {
-      "phase": "UPTREND_PULLBACK",
-      "range_pct": 98.67,
-      "higher_lows": true,
+      "phase": "VOLATILE_NO_STRUCTURE",
+      "range_pct": 160.61,
+      "higher_lows": false,
       "volume_trend": "increasing"
     },
-    "volume_spike": 3.3,
-    "rsi_14_4h": 56.04
+    "volume_spike": 2.22,
+    "rsi_14_4h": 62.54
   },
   "bitkub": {
     "listed": true,
-    "price_thb": 52.65,
-    "high_24h_thb": 61.0,
-    "low_24h_thb": 45.81,
-    "change_24h_pct": 14.51,
-    "volume_thb": 8587572.18,
-    "volume_base": 164929.03221148
+    "price_thb": 63.0,
+    "high_24h_thb": 75.0,
+    "low_24h_thb": 52.55,
+    "change_24h_pct": 19.7,
+    "volume_thb": 7113242.24,
+    "volume_base": 111934.55294703
   },
-  "opportunity_score": 64,
-  "opportunity_grade": "B"
+  "opportunity_score": 50,
+  "opportunity_grade": "C"
 }
