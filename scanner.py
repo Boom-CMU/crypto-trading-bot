@@ -17,7 +17,7 @@ import json
 import os
 import sys
 
-from config import OUTPUT_DIR, SCANNER_MIN_VOLUME_THB, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N
+from config import OUTPUT_DIR, SCANNER_MIN_VOLUME_USDT, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N
 from data_fetcher import scan_opportunities, print_scan_results, save_json
 
 
@@ -28,8 +28,8 @@ def main():
     )
     parser.add_argument("--top",        type=int,   default=SCANNER_TOP_N,
                         help=f"Top N results (default: {SCANNER_TOP_N})")
-    parser.add_argument("--min-vol",    type=float, default=SCANNER_MIN_VOLUME_THB,
-                        help=f"Min THB volume (default: {SCANNER_MIN_VOLUME_THB:,.0f})")
+    parser.add_argument("--min-vol",    type=float, default=SCANNER_MIN_VOLUME_USDT,
+                        help=f"Min volume filter (default: {SCANNER_MIN_VOLUME_USDT:,.0f})")
     parser.add_argument("--min-change", type=float, default=SCANNER_MIN_CHANGE_PCT,
                         help=f"Min 24h %% change (default: {SCANNER_MIN_CHANGE_PCT})")
     parser.add_argument("--no-deep",    action="store_true",
@@ -41,7 +41,7 @@ def main():
     print(f"\n  🔍 Scanning Bitkub... (min vol: ฿{args.min_vol:,.0f} | min change: {args.min_change}%)")
 
     scan = scan_opportunities(
-        min_vol_thb=args.min_vol,
+        min_vol_usdt=args.min_vol,
         min_change_pct=args.min_change,
         top_n=args.top,
         fetch_deep=not args.no_deep,
