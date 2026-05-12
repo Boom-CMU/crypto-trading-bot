@@ -17,8 +17,11 @@ import argparse
 import json
 import logging
 import os
+import random
 import sys
+import time as _time
 from datetime import datetime, timezone
+from functools import wraps
 from typing import Any
 
 import requests
@@ -26,7 +29,7 @@ import requests
 from config import (
     BINANCE_BASE, COINGECKO_BASE, BITKUB_BASE,
     OUTPUT_DIR, LOG_LEVEL,
-    SCANNER_MIN_VOLUME_THB, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N,
+    SCANNER_MIN_VOLUME_USDT, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N,
 )
 
 logging.basicConfig(level=getattr(logging, LOG_LEVEL, "INFO"),
@@ -42,6 +45,7 @@ _SYMBOL_TO_CG_ID = {
     "BTC": "bitcoin", "ETH": "ethereum", "BNB": "binancecoin",
     "SOL": "solana", "XRP": "ripple", "ADA": "cardano",
     "DOGE": "dogecoin", "AVAX": "avalanche-2", "MATIC": "matic-network",
+    "POL": "polygon-ecosystem-token",
     "DOT": "polkadot", "LINK": "chainlink", "UNI": "uniswap",
     "LTC": "litecoin", "ATOM": "cosmos", "NEAR": "near",
     "APT": "aptos", "SUI": "sui", "INJ": "injective-protocol",
@@ -64,43 +68,83 @@ _OVERVIEW_IDS = (
 
 
 # ─────────────────────────────────────────────────────────────
+#  Retry decorator for external HTTP helpers
+# ─────────────────────────────────────────────────────────────
+def retry_with_backoff(max_attempts: int = 3, base_delay: float = 0.5, max_delay: float = 8.0):
+    """
+    Retry decorator with exponential backoff + jitter for HTTP helpers.
+    Retries on: HTTP 429/502/503/504, Timeout, ConnectionError.
+    Honors Retry-After header on 429.
+    Returns None on final failure (preserves original caller contract).
+    """
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_attempts):
+                try:
+                    return fn(*args, **kwargs)
+                except requests.exceptions.HTTPError as e:
+                    status = getattr(e.response, "status_code", None)
+                    if status not in (429, 502, 503, 504) or attempt == max_attempts - 1:
+                        log.debug("%s final HTTP error %s", fn.__name__, status)
+                        return None
+                    retry_after = None
+                    if e.response is not None:
+                        ra = e.response.headers.get("Retry-After")
+                        if ra:
+                            try: retry_after = float(ra)
+                            except ValueError: pass
+                    delay = retry_after if retry_after is not None else min(
+                        base_delay * (2 ** attempt) + random.uniform(0, 0.3), max_delay,
+                    )
+                    log.info("%s got HTTP %s — retrying in %.1fs (attempt %d/%d)",
+                             fn.__name__, status, delay, attempt + 2, max_attempts)
+                    _time.sleep(delay)
+                except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+                    if attempt == max_attempts - 1:
+                        log.debug("%s final network error: %s", fn.__name__, e)
+                        return None
+                    delay = min(base_delay * (2 ** attempt) + random.uniform(0, 0.3), max_delay)
+                    log.info("%s network error — retrying in %.1fs (attempt %d/%d)",
+                             fn.__name__, delay, attempt + 2, max_attempts)
+                    _time.sleep(delay)
+                except Exception as e:
+                    log.debug("%s non-retryable error: %s", fn.__name__, e)
+                    return None
+            return None
+        return wrapper
+    return decorator
+
+
+# ─────────────────────────────────────────────────────────────
 #  HTTP helpers
 # ─────────────────────────────────────────────────────────────
+@retry_with_backoff(max_attempts=3, base_delay=0.5, max_delay=8.0)
 def _binance_get(path: str, params: dict | None = None) -> Any:
-    try:
-        r = requests.get(f"{BINANCE_BASE}{path}", params=params or {},
-                         headers=_HEADERS, timeout=_TIMEOUT)
-        r.raise_for_status()
-        return r.json()
-    except Exception as e:
-        log.debug("Binance %s failed: %s", path, e)
-        return None
+    r = requests.get(f"{BINANCE_BASE}{path}", params=params or {},
+                     headers=_HEADERS, timeout=_TIMEOUT)
+    r.raise_for_status()
+    return r.json()
 
 
+@retry_with_backoff(max_attempts=3, base_delay=1.0, max_delay=8.0)
 def _cg_get(path: str, params: dict | None = None) -> Any:
-    try:
-        r = requests.get(f"{COINGECKO_BASE}{path}", params=params or {},
-                         headers=_HEADERS, timeout=_TIMEOUT)
-        r.raise_for_status()
-        return r.json()
-    except Exception as e:
-        log.debug("CoinGecko %s failed: %s", path, e)
-        return None
+    r = requests.get(f"{COINGECKO_BASE}{path}", params=params or {},
+                     headers=_HEADERS, timeout=_TIMEOUT)
+    r.raise_for_status()
+    return r.json()
 
 
+@retry_with_backoff(max_attempts=3, base_delay=0.5, max_delay=8.0)
 def _bitkub_get(path: str, params: dict | None = None) -> Any:
-    try:
-        r = requests.get(f"{BITKUB_BASE}{path}", params=params or {},
-                         headers=_HEADERS, timeout=_TIMEOUT)
-        r.raise_for_status()
-        data = r.json()
-        # Some Bitkub endpoints wrap in {"error": 0, "result": {...}}
-        if isinstance(data, dict) and "result" in data and "error" in data:
-            return data["result"] if data["error"] == 0 else None
-        return data
-    except Exception as e:
-        log.debug("Bitkub %s failed: %s", path, e)
-        return None
+    r = requests.get(f"{BITKUB_BASE}{path}", params=params or {},
+                     headers=_HEADERS, timeout=_TIMEOUT)
+    r.raise_for_status()
+    data = r.json()
+    # Some Bitkub endpoints wrap in {"error": 0, "result": {...}}
+    if isinstance(data, dict) and "result" in data and "error" in data:
+        return data["result"] if data["error"] == 0 else None
+    return data
 
 
 # ─────────────────────────────────────────────────────────────
@@ -125,6 +169,45 @@ def _get_cg_id(symbol: str) -> str:
             if (coin.get("symbol") or "").upper() == sym:
                 return coin["id"]
     return sym.lower()
+
+
+# ─────────────────────────────────────────────────────────────
+#  USD/THB rate (cached 1 hour)
+# ─────────────────────────────────────────────────────────────
+_USD_THB_CACHE: dict = {"rate": None, "ts": 0.0}
+_USD_THB_TTL = 3600   # 1 hour
+
+def _fetch_usd_thb_rate() -> float:
+    """Return USD/THB exchange rate. Tries Binance USDTTHB → Bitkub THB_USDT → fallback 36.0."""
+    now = _time.time()
+    if _USD_THB_CACHE["rate"] and now - _USD_THB_CACHE["ts"] < _USD_THB_TTL:
+        return _USD_THB_CACHE["rate"]
+
+    # 1. Try Binance USDTTHB
+    r = _binance_get("/ticker/price", {"symbol": "USDTTHB"})
+    if r and "price" in r:
+        try:
+            rate = float(r["price"])
+            if 25.0 < rate < 50.0:
+                _USD_THB_CACHE.update(rate=rate, ts=now)
+                return rate
+        except (ValueError, TypeError):
+            pass
+
+    # 2. Try Bitkub THB_USDT
+    tickers = _fetch_bitkub_all_tickers()
+    bk = tickers.get("THB_USDT", {}) if tickers else {}
+    try:
+        rate = float(bk.get("last", 0))
+        if 25.0 < rate < 50.0:
+            _USD_THB_CACHE.update(rate=rate, ts=now)
+            return rate
+    except (ValueError, TypeError):
+        pass
+
+    # 3. Hardcoded final fallback
+    log.warning("Using hardcoded THB rate 36.0 — both Binance and Bitkub THB lookups failed")
+    return 36.0
 
 
 # ─────────────────────────────────────────────────────────────
@@ -177,8 +260,10 @@ def _analyze_ohlcv_structure(closes: list[float], volumes: list[float]) -> dict:
         if min(recent_closes) > 0 else 100
     )
 
-    recent_vol = sum(volumes[half:]) / len(volumes[half:]) if volumes[half:] else 0
-    older_vol = sum(volumes[:half]) / len(volumes[:half]) if volumes[:half] else 0
+    recent_vols = volumes[half:]
+    older_vols  = volumes[:half]
+    recent_vol = sum(recent_vols) / len(recent_vols) if recent_vols else 0
+    older_vol  = sum(older_vols)  / len(older_vols)  if older_vols  else 0
     if older_vol > 0:
         vol_trend = (
             "increasing" if recent_vol > older_vol * 1.15
@@ -313,10 +398,23 @@ def _calc_opportunity_grade(score: int) -> str:
 # ─────────────────────────────────────────────────────────────
 #  Bitkub API
 # ─────────────────────────────────────────────────────────────
+_bitkub_ticker_cache: dict = {}
+_bitkub_ticker_cache_ts: float = 0.0
+_BITKUB_CACHE_TTL = 120  # seconds — reuse within same scan session
+
+
 def _fetch_bitkub_all_tickers() -> dict:
-    """Fetch all Bitkub market tickers — free, no auth, one call"""
+    """Fetch all Bitkub market tickers — cached for 120s to avoid rate limiting"""
+    global _bitkub_ticker_cache, _bitkub_ticker_cache_ts
+    now = _time.time()
+    if _bitkub_ticker_cache and (now - _bitkub_ticker_cache_ts) < _BITKUB_CACHE_TTL:
+        return _bitkub_ticker_cache
     data = _bitkub_get("/market/ticker")
-    return data if isinstance(data, dict) else {}
+    result = data if isinstance(data, dict) else {}
+    if result:
+        _bitkub_ticker_cache = result
+        _bitkub_ticker_cache_ts = now
+    return result
 
 
 def _get_bitkub_coin_data(symbol: str) -> dict:
@@ -344,7 +442,7 @@ def _get_bitkub_coin_data(symbol: str) -> dict:
 #  Opportunity Scanner
 # ─────────────────────────────────────────────────────────────
 def scan_opportunities(
-    min_vol_thb: float = SCANNER_MIN_VOLUME_THB,
+    min_vol_usdt: float = SCANNER_MIN_VOLUME_USDT,
     min_change_pct: float = SCANNER_MIN_CHANGE_PCT,
     top_n: int = SCANNER_TOP_N,
     fetch_deep: bool = True,
@@ -370,9 +468,7 @@ def scan_opportunities(
         log.warning("Bitkub API unavailable — switching to CoinGecko fallback...")
         return _scan_fallback_coingecko(btc_regime, btc_chg, top_n)
 
-    # THB/USD rate จาก USDT pair บน Bitkub (fallback 33.5 ถ้าไม่มี)
-    _usdt_ticker = tickers.get("THB_USDT", {})
-    usdt_thb_rate = float(_usdt_ticker.get("last", 0)) or 33.5
+    usdt_thb_rate = _fetch_usd_thb_rate()
 
     candidates = []
     for key, ticker in tickers.items():
@@ -390,7 +486,7 @@ def scan_opportunities(
         except (ValueError, TypeError):
             continue
 
-        if last <= 0 or vol_thb < min_vol_thb:
+        if last <= 0 or vol_thb < min_vol_usdt:
             continue
         if abs(pct_chg) < min_change_pct:
             continue
@@ -869,7 +965,8 @@ def print_scan_results(scan: dict):
     elif scan.get("btc_regime") == "CAUTION":
         print(f"\n  ⚠️  CAUTION: BTC อ่อนแรง — size เล็กๆ ก่อน")
 
-    opps = scan.get("opportunities", [])
+    _DISPLAY_GRADES = {"A", "B+", "B", "C+"}
+    opps = [c for c in scan.get("opportunities", []) if c.get("grade", "F") in _DISPLAY_GRADES]
     if not opps:
         print("\n  ไม่พบ opportunity ที่น่าสนใจในตอนนี้\n")
         return
@@ -911,10 +1008,38 @@ def print_scan_results(scan: dict):
 # ─────────────────────────────────────────────────────────────
 #  Save JSON
 # ─────────────────────────────────────────────────────────────
-def save_json(data: dict, name: str):
+import glob as _glob
+import shutil
+
+_ARCHIVE_DIR  = os.path.join(OUTPUT_DIR, "archive")
+_ARCHIVE_KEEP = 10
+
+def save_json(data: dict, name: str) -> str:
+    """Save data to output/<name>.json, archiving the previous version (keep last 10)."""
+    os.makedirs(_ARCHIVE_DIR, exist_ok=True)
     path = os.path.join(OUTPUT_DIR, f"{name}.json")
+
+    if os.path.exists(path):
+        ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        archive_path = os.path.join(_ARCHIVE_DIR, f"{name}_{ts}.json")
+        try:
+            shutil.copy2(path, archive_path)
+        except Exception as e:
+            log.warning("Archive failed for %s: %s", name, e)
+
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+
+    try:
+        files = sorted(
+            _glob.glob(os.path.join(_ARCHIVE_DIR, f"{name}_*.json")),
+            key=os.path.getmtime, reverse=True,
+        )
+        for old in files[_ARCHIVE_KEEP:]:
+            os.remove(old)
+    except Exception as e:
+        log.debug("Archive prune failed for %s: %s", name, e)
+
     return path
 
 
@@ -927,7 +1052,7 @@ def main():
     parser.add_argument("--overview",   action="store_true", help="Market overview (top 15 coins)")
     parser.add_argument("--scan",       action="store_true", help="Scan Bitkub for opportunities")
     parser.add_argument("--top",        type=int,  default=SCANNER_TOP_N, help="Top N results for scan")
-    parser.add_argument("--min-vol",    type=float, default=SCANNER_MIN_VOLUME_THB, help="Min THB volume for scan")
+    parser.add_argument("--min-vol",    type=float, default=SCANNER_MIN_VOLUME_USDT, help="Min volume for scan")
     parser.add_argument("--min-change", type=float, default=SCANNER_MIN_CHANGE_PCT, help="Min 24h %% change for scan")
     args = parser.parse_args()
 
@@ -943,7 +1068,7 @@ def main():
 
     if args.scan:
         scan = scan_opportunities(
-            min_vol_thb=args.min_vol,
+            min_vol_usdt=args.min_vol,
             min_change_pct=args.min_change,
             top_n=args.top,
         )

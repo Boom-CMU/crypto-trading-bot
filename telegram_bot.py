@@ -1,9 +1,9 @@
 """
 telegram_bot.py — ส่งผล Daily Crypto Scan ไปยัง Telegram
 Usage:
-  python telegram_bot.py            # ส่งผลล่าสุดจาก output/opportunity_scan.json
+  python telegram_bot.py            # scan ใหม่แล้วส่ง (default)
   python telegram_bot.py --test     # ทดสอบ connection
-  python telegram_bot.py --scan     # scan แล้วส่งเลย (ไม่ต้องรัน scanner.py ก่อน)
+  python telegram_bot.py --from-file  # ใช้ output/opportunity_scan.json ที่เก็บไว้ (ไม่ scan ใหม่)
 """
 from __future__ import annotations
 
@@ -36,11 +36,14 @@ def _esc(text: str) -> str:
 
 def _grade_emoji(grade: str) -> str:
     return {
-        "A": "🔥",
-        "B+": "📈", "B": "📈",
-        "C+": "👀", "C": "👀",
-        "D+": "😐", "D": "😴",
-        "F": "😴",
+        "A":  "🔥",
+        "B+": "🔥",
+        "B":  "⚡",
+        "C+": "📈",
+        "C":  "👀",
+        "D+": "😐",
+        "D":  "😴",
+        "F":  "🚫",
     }.get(grade, "😴")
 
 
@@ -104,7 +107,7 @@ def _fmt_vol_usd(vol) -> str:
 # ─────────────────────────────────────────────────────────────
 #  Message builder
 # ─────────────────────────────────────────────────────────────
-def build_message(scan: dict, top_n: int = 8) -> str:
+def build_message(scan: dict, top_n: int = 15) -> str:
     ts_raw  = scan.get("timestamp", "")
     regime  = scan.get("btc_regime", "N/A")
     btc_chg = scan.get("btc_change_24h_pct", 0)
@@ -136,10 +139,8 @@ def build_message(scan: dict, top_n: int = 8) -> str:
             "",
         ]
 
-    # Filter grade A/B+/B and above, fallback to top_n
-    shown = [o for o in opps if o.get("grade", "F") in ("A", "B+", "B", "C+", "C")][:top_n]
-    if not shown:
-        shown = opps[:top_n]
+    # Filter grade A/B+/B/C+ (score ≥ 55) only
+    shown = [o for o in opps if o.get("grade", "F") in ("A", "B+", "B", "C+")][:top_n]
 
     if not shown:
         lines.append("😴 ไม่พบ opportunity ที่น่าสนใจวันนี้")
@@ -244,9 +245,10 @@ def send_message(text: str, token: str = BOT_TOKEN, chat_id: str = CHAT_ID) -> b
 # ─────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="Telegram Daily Crypto Report")
-    parser.add_argument("--test",  action="store_true", help="ส่ง test message")
-    parser.add_argument("--scan",  action="store_true", help="รัน scanner แล้วส่งเลย")
-    parser.add_argument("--top",   type=int, default=8,  help="แสดงกี่เหรียญ (default: 8)")
+    parser.add_argument("--test",      action="store_true", help="ส่ง test message")
+    parser.add_argument("--scan",      action="store_true", help="(deprecated — scan ใหม่เป็น default อยู่แล้ว)")
+    parser.add_argument("--from-file", action="store_true", help="ใช้ opportunity_scan.json ที่มีอยู่ ไม่ scan ใหม่")
+    parser.add_argument("--top",       type=int, default=15, help="แสดงกี่เหรียญ (default: 15)")
     args = parser.parse_args()
 
     if not BOT_TOKEN or not CHAT_ID:
@@ -264,24 +266,25 @@ def main():
         success = send_message(msg)
         sys.exit(0 if success else 1)
 
-    if args.scan:
-        print("📡 กำลัง scan...")
+    if args.from_file:
+        if not os.path.exists(SCAN_FILE):
+            print(f"❌ ไม่พบ {SCAN_FILE}")
+            print("   รัน: python scanner.py ก่อน หรือไม่ต้องใส่ --from-file")
+            sys.exit(1)
+        print(f"📂 อ่านจาก {SCAN_FILE}")
+        with open(SCAN_FILE, encoding="utf-8") as f:
+            scan = json.load(f)
+    else:
+        print("📡 กำลัง scan ใหม่...")
         from data_fetcher import scan_opportunities, save_json
-        from config import SCANNER_MIN_VOLUME_THB, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N
+        from config import SCANNER_MIN_VOLUME_USDT, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N
         scan = scan_opportunities(
-            min_vol_thb=SCANNER_MIN_VOLUME_THB,
+            min_vol_usdt=SCANNER_MIN_VOLUME_USDT,
             min_change_pct=SCANNER_MIN_CHANGE_PCT,
             top_n=SCANNER_TOP_N,
             fetch_deep=True,
         )
         save_json(scan, "opportunity_scan")
-    else:
-        if not os.path.exists(SCAN_FILE):
-            print(f"❌ ไม่พบ {SCAN_FILE}")
-            print("   รัน: python scanner.py ก่อน หรือใช้ --scan flag")
-            sys.exit(1)
-        with open(SCAN_FILE, encoding="utf-8") as f:
-            scan = json.load(f)
 
     msg = build_message(scan, top_n=args.top)
     print("\n─── Preview ───")
