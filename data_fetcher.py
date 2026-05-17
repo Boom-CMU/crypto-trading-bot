@@ -26,8 +26,9 @@ from typing import Any
 
 import requests
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import (
-    BINANCE_BASE, COINGECKO_BASE, BITKUB_BASE,
+    BINANCE_BASE, BINANCETH_BASE, COINGECKO_BASE, BITKUB_BASE,
     OUTPUT_DIR, LOG_LEVEL,
     SCANNER_MIN_VOLUME_USDT, SCANNER_MIN_CHANGE_PCT, SCANNER_TOP_N,
 )
@@ -42,6 +43,7 @@ _HEADERS = {"User-Agent": "CryptoOpportunityScanner/2.0 (Research, Free APIs)"}
 _TIMEOUT = 15
 
 _SYMBOL_TO_CG_ID = {
+    # ── Major global coins ──────────────────────────────────────
     "BTC": "bitcoin", "ETH": "ethereum", "BNB": "binancecoin",
     "SOL": "solana", "XRP": "ripple", "ADA": "cardano",
     "DOGE": "dogecoin", "AVAX": "avalanche-2", "MATIC": "matic-network",
@@ -52,12 +54,28 @@ _SYMBOL_TO_CG_ID = {
     "ARB": "arbitrum", "OP": "optimism", "PEPE": "pepe",
     "SHIB": "shiba-inu", "FET": "fetch-ai", "RENDER": "render-token",
     "TRX": "tron", "XLM": "stellar", "ICP": "internet-computer",
-    # Bitkub-listed coins
+    "TON": "the-open-network", "SEI": "sei-network",
+    "JUP": "jupiter-exchange-solana", "WLD": "worldcoin-wld",
+    "NOT": "notcoin", "FLOKI": "floki", "PENDLE": "pendle",
+    "GMX": "gmx", "JASMY": "jasmycoin", "TRUMP": "official-trump",
+    "RAY": "raydium", "PYTH": "pyth-network",
+    # ── DeFi / Infrastructure ───────────────────────────────────
+    "AAVE": "aave", "GRT": "the-graph", "CRV": "curve-dao-token",
+    "ORCA": "orca", "RUNE": "thorchain", "OSMO": "osmosis",
+    # ── Mid / small caps ────────────────────────────────────────
+    "CHZ": "chiliz", "QNT": "quant-network", "APE": "apecoin",
+    "TIA": "celestia", "STORJ": "storj", "NMR": "numeraire",
+    "HOLO": "holotoken", "ORDI": "ordinals",
+    "LUNA": "terra-luna-2", "LUNC": "terra-luna",
+    "VIC": "tomochain", "PHB": "phoenix-global",
+    "CGPT": "chaingpt", "KAITO": "kaito", "KAIA": "kaia",
+    "AIXBT": "aixbt-by-virtuals", "DOGS": "dogs-1",
+    # ── Bitkub-listed coins ─────────────────────────────────────
     "KUB": "bitkub-coin", "SIX": "six-network", "JFIN": "jfin-coin",
     "ERN": "ethernity-chain", "SAND": "the-sandbox", "MANA": "decentraland",
-    "GALA": "gala", "AXS": "axie-infinity", "AAVE": "aave",
-    "GRT": "the-graph", "BAND": "band-protocol", "FTM": "fantom",
-    "CAKE": "pancakeswap-token", "CRV": "curve-dao-token",
+    "GALA": "gala", "AXS": "axie-infinity",
+    "BAND": "band-protocol", "FTM": "fantom",
+    "CAKE": "pancakeswap-token",
     "WIF": "dogwifcoin", "BONK": "bonk",
 }
 
@@ -147,6 +165,45 @@ def _bitkub_get(path: str, params: dict | None = None) -> Any:
     return data
 
 
+def _binanceth_get(path: str, params: dict | None = None) -> Any:
+    """GET request to Binance TH API (no retry — used in bulk parallel calls)"""
+    try:
+        r = requests.get(f"{BINANCETH_BASE}{path}", params=params or {},
+                         headers=_HEADERS, timeout=_TIMEOUT)
+        r.raise_for_status()
+        return r.json()
+    except Exception as e:
+        log.debug("Binance TH API error %s: %s", path, e)
+        return None
+
+
+_binanceth_symbols_cache: list = []
+_binanceth_symbols_ts: float = 0.0
+_BINANCETH_SYMBOLS_TTL = 3600  # refresh symbol list hourly
+
+
+def _fetch_binanceth_usdt_symbols() -> list:
+    """Get all active USDT trading pairs from Binance TH exchangeInfo (cached 1h)"""
+    global _binanceth_symbols_cache, _binanceth_symbols_ts
+    now = _time.time()
+    if _binanceth_symbols_cache and (now - _binanceth_symbols_ts) < _BINANCETH_SYMBOLS_TTL:
+        return _binanceth_symbols_cache
+    data = _binanceth_get("/exchangeInfo")
+    if not data:
+        return []
+    symbols = [
+        s["symbol"][:-4]  # strip USDT suffix → base symbol
+        for s in data.get("symbols", [])
+        if s.get("quoteAsset") == "USDT"
+        and s.get("status") == "TRADING"
+    ]
+    _binanceth_symbols_cache = symbols
+    _binanceth_symbols_ts = now
+    return symbols
+
+
+
+
 # ─────────────────────────────────────────────────────────────
 #  Symbol normalization
 # ─────────────────────────────────────────────────────────────
@@ -169,6 +226,46 @@ def _get_cg_id(symbol: str) -> str:
             if (coin.get("symbol") or "").upper() == sym:
                 return coin["id"]
     return sym.lower()
+
+
+def _batch_fetch_cg_data(symbols: list[str]) -> dict[str, dict]:
+    """Batch-fetch CoinGecko market data for multiple symbols in 1-2 API calls.
+
+    Returns dict keyed by CoinGecko ID with fields normalized to match
+    the /simple/price response format used by fetch_crypto().
+    Coins not found in the static mapping fall back to symbol.lower() as ID.
+    """
+    sym_to_id: dict[str, str] = {
+        s.upper(): _SYMBOL_TO_CG_ID.get(s.upper(), s.upper().lower())
+        for s in symbols
+    }
+    all_ids = list(set(sym_to_id.values()))
+    result: dict[str, dict] = {}
+
+    for chunk in (all_ids[:250], all_ids[250:]):
+        if not chunk:
+            continue
+        data = _cg_get("/coins/markets", {
+            "vs_currency":            "usd",
+            "ids":                    ",".join(chunk),
+            "per_page":               250,
+            "sparkline":              "false",
+            "price_change_percentage": "7d",
+        }) or []
+        for coin in data:
+            cg_id = coin.get("id")
+            if cg_id:
+                result[cg_id] = {
+                    "usd":            coin.get("current_price"),
+                    "usd_market_cap": coin.get("market_cap"),
+                    "usd_24h_vol":    coin.get("total_volume"),
+                    "usd_24h_change": coin.get("price_change_percentage_24h"),
+                    "usd_7d_change":  coin.get(
+                        "price_change_percentage_7d_in_currency"
+                    ),
+                }
+    log.info("CoinGecko batch: fetched %d/%d coins", len(result), len(all_ids))
+    return result
 
 
 # ─────────────────────────────────────────────────────────────
@@ -297,12 +394,12 @@ def _analyze_ohlcv_structure(closes: list[float], volumes: list[float]) -> dict:
 # ─────────────────────────────────────────────────────────────
 def _quick_opportunity_score(
     pct_change: float,
-    vol_thb: float,
+    vol_usdt: float,
     price: float,
     high_24h: float,
     low_24h: float,
 ) -> int:
-    """Quick score from Bitkub ticker data only (no OHLCV needed)"""
+    """Quick score from Binance ticker data only (no OHLCV needed)"""
     score = 0
 
     # Momentum 24h (0-40)
@@ -312,12 +409,12 @@ def _quick_opportunity_score(
     elif pct_change >= 2:  score += 10
     elif pct_change >= 0:  score += 3
 
-    # Volume in THB (0-35)
-    if vol_thb >= 100_000_000:  score += 35
-    elif vol_thb >= 50_000_000: score += 28
-    elif vol_thb >= 10_000_000: score += 20
-    elif vol_thb >= 5_000_000:  score += 12
-    elif vol_thb >= 1_000_000:  score += 5
+    # Volume in USDT (0-35) — calibrated for Binance TH coin range
+    if vol_usdt >= 50_000_000:   score += 35   # $50M+ (BTC/ETH/DOGE tier)
+    elif vol_usdt >= 20_000_000: score += 28   # $20M+
+    elif vol_usdt >= 10_000_000: score += 20   # $10M+
+    elif vol_usdt >= 5_000_000:  score += 12   # $5M+
+    elif vol_usdt >= 1_000_000:  score += 5    # $1M+
 
     # Price near 24h high = momentum continuing (0-25)
     if high_24h > 0 and price > 0:
@@ -448,13 +545,14 @@ def scan_opportunities(
     fetch_deep: bool = True,
 ) -> dict:
     """
-    Scan Bitkub for opportunities.
-    Pass 1: Quick filter from all Bitkub tickers (1 API call)
-    Pass 2: Fetch full OHLCV from Binance for top candidates
+    Scan opportunities — Binance TH coin list × Binance global volume/price.
+    Step A: Binance TH exchangeInfo → which USDT coins are tradable (cached 1h)
+    Step B: Binance global /ticker/24hr → real volume + momentum (1 API call)
+    Pass 2: Fetch full OHLCV from Binance global for top candidates
     """
     log.info("🔍 Starting opportunity scan...")
 
-    # BTC regime
+    # BTC regime — Binance global
     btc_raw = _binance_get("/ticker/24hr", {"symbol": "BTCUSDT"})
     btc_chg = float(btc_raw.get("priceChangePercent", 0)) if btc_raw else 0.0
     if btc_chg < -5:        btc_regime = "RISK_OFF"
@@ -462,58 +560,70 @@ def scan_opportunities(
     elif abs(btc_chg) <= 3: btc_regime = "RANGING"
     else:                   btc_regime = "UPTREND"
 
-    # Pass 1 — Bitkub tickers
-    tickers = _fetch_bitkub_all_tickers()
-    if not tickers:
-        log.warning("Bitkub API unavailable — switching to CoinGecko fallback...")
+    # Step A — Binance TH coin list (cached 1h)
+    log.info("Fetching Binance TH symbol list...")
+    th_symbols = set(_fetch_binanceth_usdt_symbols())
+    if not th_symbols:
+        log.warning("Binance TH exchangeInfo unavailable — switching to CoinGecko fallback...")
         return _scan_fallback_coingecko(btc_regime, btc_chg, top_n)
 
-    usdt_thb_rate = _fetch_usd_thb_rate()
+    # Step B — Binance global 24hr tickers (1 call), filter to TH-listed coins
+    log.info("Fetching Binance global tickers for %d TH-listed coins...", len(th_symbols))
+    all_tickers = _binance_get("/ticker/24hr")
+    if not all_tickers or not isinstance(all_tickers, list):
+        log.warning("Binance global ticker unavailable — switching to CoinGecko fallback...")
+        return _scan_fallback_coingecko(btc_regime, btc_chg, top_n)
+
+    _STABLES = {"USDC", "BUSD", "TUSD", "DAI", "FDUSD", "USDP", "AEUR", "EURI", "BKRW",
+                "UST", "USDD", "FRAX", "LUSD", "SUSD", "GUSD", "PAXG", "WBTC"}
 
     candidates = []
-    for key, ticker in tickers.items():
-        if not key.startswith("THB_"):
+    for t in all_tickers:
+        sym_full = t.get("symbol", "")
+        if not sym_full.endswith("USDT"):
             continue
-        symbol = key[4:]
-        if not symbol or len(symbol) > 10:
+        symbol = sym_full[:-4]
+        if symbol not in th_symbols or symbol in _STABLES:
+            continue
+        if not symbol.isascii() or len(symbol) > 10:
             continue
         try:
-            last     = float(ticker.get("last", 0))
-            pct_chg  = float(ticker.get("percentChange", 0))
-            vol_thb  = float(ticker.get("quoteVolume", 0))
-            high_24h = float(ticker.get("high24hr", last))
-            low_24h  = float(ticker.get("low24hr", last))
+            price    = float(t.get("lastPrice", 0))
+            pct_chg  = float(t.get("priceChangePercent", 0))
+            vol_usdt = float(t.get("quoteVolume", 0))
+            high_24h = float(t.get("highPrice", price))
+            low_24h  = float(t.get("lowPrice", price))
         except (ValueError, TypeError):
             continue
 
-        if last <= 0 or vol_thb < min_vol_usdt:
+        if price <= 0 or vol_usdt < min_vol_usdt:
             continue
         if abs(pct_chg) < min_change_pct:
             continue
 
-        quick = _quick_opportunity_score(pct_chg, vol_thb, last, high_24h, low_24h)
+        quick = _quick_opportunity_score(pct_chg, vol_usdt, price, high_24h, low_24h)
         candidates.append({
-            "symbol":        symbol,
-            "price_thb":     round(last, 8),
-            "price_usd":     round(last / usdt_thb_rate, 8),
+            "symbol":         symbol,
+            "price_usd":      round(price, 8),
             "change_24h_pct": round(pct_chg, 2),
-            "volume_thb":    round(vol_thb, 2),
-            "high_24h_thb":  round(high_24h, 8),
-            "low_24h_thb":   round(low_24h, 8),
-            "quick_score":   quick,
-            "listed_bitkub": True,
+            "volume_usdt":    round(vol_usdt, 2),
+            "high_24h_usd":   round(high_24h, 8),
+            "low_24h_usd":    round(low_24h, 8),
+            "quick_score":    quick,
         })
 
-    candidates.sort(key=lambda x: x["quick_score"], reverse=True)
+    # Sort by volume (global liquidity) descending, take top candidates
+    candidates.sort(key=lambda x: x["volume_usdt"], reverse=True)
     pool = candidates[:min(top_n * 2, 30)]
 
     # Pass 2 — Deep OHLCV fetch for top candidates
     if fetch_deep and pool:
         print(f"  📡 Fetching technicals for {len(pool)} candidates...")
+        cg_batch = _batch_fetch_cg_data([c["symbol"] for c in pool])
         for c in pool:
             sym = c["symbol"]
             try:
-                data = fetch_crypto(sym)
+                data = fetch_crypto(sym, cg_prefetch=cg_batch)
                 if "error" not in data:
                     tech    = data.get("technicals", {})
                     struct  = tech.get("price_structure", {})
@@ -571,10 +681,9 @@ def _scan_fallback_coingecko(btc_regime: str, btc_chg: float, top_n: int) -> dic
             pct_chg = c.get("price_change_percentage_24h") or 0
             if pct_chg < 2:
                 continue
-            # Convert USD volume to rough THB equivalent (×35) for scoring
-            vol_thb_est = (c.get("total_volume") or 0) * 35
             score = _quick_opportunity_score(
-                pct_chg, vol_thb_est,
+                pct_chg,
+                c.get("total_volume") or 0,
                 c.get("current_price", 0),
                 c.get("high_24h", 0),
                 c.get("low_24h", 0),
@@ -604,7 +713,7 @@ def _scan_fallback_coingecko(btc_regime: str, btc_chg: float, top_n: int) -> dic
 # ─────────────────────────────────────────────────────────────
 #  Fetch single coin
 # ─────────────────────────────────────────────────────────────
-def fetch_crypto(symbol_or_pair: str) -> dict:
+def fetch_crypto(symbol_or_pair: str, cg_prefetch: dict | None = None) -> dict:
     pair, base = _normalize_symbol(symbol_or_pair)
     log.info("Fetching %s (Binance primary)...", pair)
 
@@ -702,17 +811,24 @@ def fetch_crypto(symbol_or_pair: str) -> dict:
     result["technicals"] = technicals
 
     # CoinGecko: market cap + 7d change
-    cg_id   = _get_cg_id(base)
-    cg_data = _cg_get("/simple/price", {
-        "ids": cg_id,
-        "vs_currencies": "usd",
-        "include_market_cap": "true",
-        "include_24hr_vol":   "true",
-        "include_24hr_change": "true",
-        "include_7d_change":  "true",
-    })
-    if cg_data and cg_id in cg_data:
-        cd = cg_data[cg_id]
+    # Batch path (scanner): use static map only — no search API calls, no per-coin calls
+    # Standalone path (analyzer): full _get_cg_id lookup with search fallback
+    if cg_prefetch is not None:
+        cg_id = _SYMBOL_TO_CG_ID.get(base, base.lower())
+        cd = cg_prefetch.get(cg_id)
+    else:
+        cg_id = _get_cg_id(base)
+        cg_data = _cg_get("/simple/price", {
+            "ids":              cg_id,
+            "vs_currencies":    "usd",
+            "include_market_cap":  "true",
+            "include_24hr_vol":    "true",
+            "include_24hr_change": "true",
+            "include_7d_change":   "true",
+        })
+        cd = cg_data.get(cg_id) if cg_data else None
+
+    if cd:
         result["market_data"] = {
             "market_cap_usd":  cd.get("usd_market_cap"),
             "volume_24h_usd":  cd.get("usd_24h_vol"),
@@ -950,7 +1066,7 @@ def print_scan_results(scan: dict):
     grade_icon = {"A": "🔥🔥🔥", "B+": "🔥🔥", "B": "⚡⚡", "C+": "📈", "C": "👀", "D+": "😐", "D": "😴", "F": "🚫"}
 
     print(f"\n{'╔' + '═'*64 + '╗'}")
-    print(f"║  🚀 CRYPTO OPPORTUNITY SCANNER — Bitkub + Binance          ║")
+    print(f"║  🚀 CRYPTO OPPORTUNITY SCANNER — Binance TH                 ║")
     print(f"{'╚' + '═'*64 + '╝'}")
 
     ts = scan.get("timestamp", "")[:16].replace("T", " ")
@@ -971,15 +1087,15 @@ def print_scan_results(scan: dict):
         print("\n  ไม่พบ opportunity ที่น่าสนใจในตอนนี้\n")
         return
 
-    print(f"\n  {'Grd':>5} {'Symbol':<7} {'THB Price':>12} {'7d%':>7} "
+    print(f"\n  {'Grd':>5} {'Symbol':<8} {'USD Price':>12} {'24h%':>7} {'7d%':>7} "
           f"{'VolSpike':>9} {'RSI':>5} {'Phase':<28} {'Score':>5}")
-    print(f"  {'-'*85}")
+    print(f"  {'-'*90}")
 
     for c in opps:
         grade   = c.get("grade", "?")
         score   = c.get("opportunity_score", c.get("quick_score", 0))
         sym     = c.get("symbol", "?")
-        p_thb   = c.get("price_thb", 0)
+        p_usd   = c.get("price_usd", 0)
         chg_24h = c.get("change_24h_pct", 0)
         chg_7d  = c.get("change_7d_pct") or 0
         spike   = c.get("volume_spike")
@@ -987,16 +1103,17 @@ def print_scan_results(scan: dict):
         phase   = (c.get("phase") or "N/A")[:27]
         icon    = grade_icon.get(grade, "")
 
-        p_str     = f"฿{p_thb:,.4f}" if p_thb else "N/A"
+        p_str     = f"${p_usd:,.4f}" if p_usd else "N/A"
         spike_str = (f"🔥×{spike:.1f}" if spike and spike >= 2
                      else f"↑×{spike:.1f}" if spike and spike >= 1.3
                      else (f"×{spike:.1f}" if spike else "N/A"))
         rsi_str   = f"{rsi:.1f}" if rsi else "N/A"
+        c24_str   = f"{chg_24h:+.1f}%"
         c7_str    = f"{chg_7d:+.1f}%" if chg_7d else "  N/A"
 
         print(
-            f"  [{grade}]{icon:<1} {sym:<7} {p_str:>12} "
-            f"{c7_str:>7} "
+            f"  [{grade}]{icon:<1} {sym:<8} {p_str:>12} "
+            f"{c24_str:>7} {c7_str:>7} "
             f"{spike_str:>9} {rsi_str:>5}  {phase:<28} {score:>5}"
         )
 

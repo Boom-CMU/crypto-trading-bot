@@ -128,7 +128,7 @@ def build_message(scan: dict, top_n: int = 15) -> str:
     lines = [
         f"🔍 <b>Daily Crypto Scan</b> — {_esc(date_str)} (BKK)",
         f"🌐 BTC Regime: <b>{_esc(regime)}</b> {regime_icon}  ({_esc(btc_chg_str)})",
-        f"📊 Scanned: {total} Bitkub coins",
+        f"📊 Scanned: {total} coins (Binance TH)",
         "",
     ]
 
@@ -153,18 +153,12 @@ def build_message(scan: dict, top_n: int = 15) -> str:
             grade     = coin.get("grade", "?")
             score     = coin.get("opportunity_score") or coin.get("quick_score", 0)
             price_usd = coin.get("price_usd")
-            price_thb = coin.get("price_thb")
             chg24     = coin.get("change_24h_pct", 0)
-            vol_thb   = coin.get("volume_thb")
+            vol_usd   = coin.get("volume_usdt")
             phase     = coin.get("phase", "")
             rsi       = coin.get("rsi_14")
             spike     = coin.get("volume_spike")
             chg7d     = coin.get("change_7d_pct")
-
-            # คำนวณ volume USD จาก volume THB
-            vol_usd = None
-            if vol_thb and price_thb and price_thb > 0 and price_usd:
-                vol_usd = vol_thb * (price_usd / price_thb)
 
             chg24_str = f"{chg24:+.1f}%" if chg24 else "N/A"
             chg7d_str = f"7d {chg7d:+.1f}%" if chg7d is not None else ""
