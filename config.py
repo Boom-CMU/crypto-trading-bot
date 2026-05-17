@@ -17,6 +17,7 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 OUTPUT_DIR = "output"
 
 BINANCE_BASE = "https://api.binance.com/api/v3"
+BINANCETH_BASE = "https://api.binance.th/api/v1"    # Binance TH (Thai regulated)
 COINGECKO_BASE = "https://api.coingecko.com/api/v3"
 BITKUB_BASE = "https://api.bitkub.com/api"          # free, no auth needed
 
@@ -31,7 +32,7 @@ SUPPORTED_SYMBOLS = [
 ]
 
 # Opportunity scanner defaults
-SCANNER_MIN_VOLUME_USDT = 1_000_000   # minimum volume filter (THB units, Bitkub)
+SCANNER_MIN_VOLUME_USDT = 1_000_000   # minimum 24h volume in USDT (Binance quoteVolume)
 SCANNER_MIN_CHANGE_PCT = 2.0         # minimum 2% 24h move
 SCANNER_TOP_N = 15                   # display top N results
 
