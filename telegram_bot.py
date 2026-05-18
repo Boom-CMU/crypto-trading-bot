@@ -128,7 +128,7 @@ def build_message(scan: dict, top_n: int = 15) -> str:
     lines = [
         f"🔍 <b>Daily Crypto Scan</b> — {_esc(date_str)} (BKK)",
         f"🌐 BTC Regime: <b>{_esc(regime)}</b> {regime_icon}  ({_esc(btc_chg_str)})",
-        f"📊 Scanned: {total} coins (Binance TH)",
+        f"📊 Scanned: {total} coins ({('⚠️ CoinGecko fallback' if scan.get('source') == 'coingecko_fallback' else 'Binance TH')})",
         "",
     ]
 

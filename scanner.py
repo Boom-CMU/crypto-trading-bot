@@ -1,11 +1,11 @@
 """
 scanner.py — CRYPTO OPPORTUNITY SCANNER CLI
-ค้นหาเหรียญ momentum + pre-breakout จาก Bitkub ทั้งหมด
+ค้นหาเหรียญ momentum + pre-breakout จาก Binance TH ทั้งหมด
 
 Usage:
-  python scanner.py                        # scan ทุก Bitkub coins
+  python scanner.py                        # scan ทุก Binance TH coins
   python scanner.py --top 20               # top 20
-  python scanner.py --min-vol 5000000      # min 5M THB volume
+  python scanner.py --min-vol 2000000      # min 2M USDT volume
   python scanner.py --min-change 5         # min 5% 24h change
   python scanner.py --analyze              # scan + deep analyze top 3
   python scanner.py --no-deep              # quick scan เฉพาะ ticker (เร็วกว่า)
@@ -38,7 +38,7 @@ def main():
                         help="Deep analyze top 3 opportunities after scan")
     args = parser.parse_args()
 
-    print(f"\n  🔍 Scanning Bitkub... (min vol: ฿{args.min_vol:,.0f} | min change: {args.min_change}%)")
+    print(f"\n  🔍 Scanning Binance TH... (min vol: ${args.min_vol:,.0f} USDT | min change: {args.min_change}%)")
 
     scan = scan_opportunities(
         min_vol_usdt=args.min_vol,
