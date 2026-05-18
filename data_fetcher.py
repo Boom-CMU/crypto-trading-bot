@@ -671,38 +671,39 @@ def scan_opportunities(
 
 
 def _scan_fallback_coingecko(btc_regime: str, btc_chg: float, top_n: int) -> dict:
-    """Fallback scanner using CoinGecko when Bitkub is unavailable"""
+    """Fallback scanner via CoinGecko — uses known Binance TH coin IDs from static map.
+    Activated when both Binance TH and Global Binance APIs are unreachable (e.g. GitHub Actions).
+    """
+    ids_str = ",".join(_SYMBOL_TO_CG_ID.values())
     gainers = _cg_get("/coins/markets", {
-        "vs_currency": "usd",
-        "order": "market_cap_desc",
-        "per_page": 50,
-        "page": 1,
+        "vs_currency":             "usd",
+        "ids":                     ids_str,
+        "per_page":                250,
         "price_change_percentage": "24h,7d",
-        "sparkline": "false",
+        "sparkline":               "false",
     })
     opportunities = []
     if gainers:
         for c in sorted(gainers, key=lambda x: x.get("price_change_percentage_24h") or 0, reverse=True):
             pct_chg = c.get("price_change_percentage_24h") or 0
-            if pct_chg < 2:
+            vol     = c.get("total_volume") or 0
+            price   = c.get("current_price") or 0
+            if pct_chg < 2 or vol < 1_000_000:
                 continue
             score = _quick_opportunity_score(
-                pct_chg,
-                c.get("total_volume") or 0,
-                c.get("current_price", 0),
-                c.get("high_24h", 0),
-                c.get("low_24h", 0),
+                pct_chg, vol, price,
+                c.get("high_24h") or price,
+                c.get("low_24h") or price,
             )
             opportunities.append({
-                "symbol":          (c.get("symbol") or "").upper(),
-                "price_usd":       c.get("current_price"),
-                "change_24h_pct":  round(pct_chg, 2),
-                "change_7d_pct":   round(c.get("price_change_percentage_7d_in_currency") or 0, 2),
-                "volume_usd":      c.get("total_volume"),
-                "listed_bitkub":   False,
-                "quick_score":     score,
+                "symbol":            (c.get("symbol") or "").upper(),
+                "price_usd":         price,
+                "change_24h_pct":    round(pct_chg, 2),
+                "change_7d_pct":     round(c.get("price_change_percentage_7d_in_currency") or 0, 2),
+                "volume_usdt":       vol,
+                "quick_score":       score,
                 "opportunity_score": score,
-                "grade":           _calc_opportunity_grade(score),
+                "grade":             _calc_opportunity_grade(score),
             })
 
     return {

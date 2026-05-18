@@ -109,7 +109,7 @@ def _fmt_vol_usd(vol) -> str:
 # ─────────────────────────────────────────────────────────────
 def _source_label(source: str | None) -> str:
     if source == "coingecko_fallback":
-        return "⚠️ CoinGecko fallback"
+        return "⚠️ CoinGecko (Binance TH coins)"
     if source == "global_binance_fallback":
         return "🌐 Global Binance (TH unavailable)"
     return "Binance TH"
