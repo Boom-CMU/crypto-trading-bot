@@ -107,6 +107,14 @@ def _fmt_vol_usd(vol) -> str:
 # ─────────────────────────────────────────────────────────────
 #  Message builder
 # ─────────────────────────────────────────────────────────────
+def _source_label(source: str | None) -> str:
+    if source == "coingecko_fallback":
+        return "⚠️ CoinGecko fallback"
+    if source == "global_binance_fallback":
+        return "🌐 Global Binance (TH unavailable)"
+    return "Binance TH"
+
+
 def build_message(scan: dict, top_n: int = 15) -> str:
     ts_raw  = scan.get("timestamp", "")
     regime  = scan.get("btc_regime", "N/A")
@@ -128,7 +136,7 @@ def build_message(scan: dict, top_n: int = 15) -> str:
     lines = [
         f"🔍 <b>Daily Crypto Scan</b> — {_esc(date_str)} (BKK)",
         f"🌐 BTC Regime: <b>{_esc(regime)}</b> {regime_icon}  ({_esc(btc_chg_str)})",
-        f"📊 Scanned: {total} coins ({('⚠️ CoinGecko fallback' if scan.get('source') == 'coingecko_fallback' else 'Binance TH')})",
+        f"📊 Scanned: {total} coins ({_source_label(scan.get('source'))})",
         "",
     ]
 

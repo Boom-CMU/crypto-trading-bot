@@ -564,11 +564,13 @@ def scan_opportunities(
     log.info("Fetching Binance TH symbol list...")
     th_symbols = set(_fetch_binanceth_usdt_symbols())
     if not th_symbols:
-        log.warning("Binance TH exchangeInfo unavailable — switching to CoinGecko fallback...")
-        return _scan_fallback_coingecko(btc_regime, btc_chg, top_n)
+        log.warning("Binance TH unavailable — falling back to Global Binance (no TH filter)")
 
-    # Step B — Binance global 24hr tickers (1 call), filter to TH-listed coins
-    log.info("Fetching Binance global tickers for %d TH-listed coins...", len(th_symbols))
+    # Step B — Binance global 24hr tickers (1 call)
+    if th_symbols:
+        log.info("Fetching Binance global tickers for %d TH-listed coins...", len(th_symbols))
+    else:
+        log.info("Fetching Binance global tickers (all coins — TH filter bypassed)...")
     all_tickers = _binance_get("/ticker/24hr")
     if not all_tickers or not isinstance(all_tickers, list):
         log.warning("Binance global ticker unavailable — switching to CoinGecko fallback...")
@@ -583,7 +585,7 @@ def scan_opportunities(
         if not sym_full.endswith("USDT"):
             continue
         symbol = sym_full[:-4]
-        if symbol not in th_symbols or symbol in _STABLES:
+        if (th_symbols and symbol not in th_symbols) or symbol in _STABLES:
             continue
         if not symbol.isascii() or len(symbol) > 10:
             continue
@@ -656,13 +658,16 @@ def scan_opportunities(
 
     pool.sort(key=lambda x: x.get("opportunity_score", x["quick_score"]), reverse=True)
 
-    return {
+    result = {
         "timestamp":          datetime.now(timezone.utc).isoformat(),
         "btc_regime":         btc_regime,
         "btc_change_24h_pct": round(btc_chg, 2),
         "total_scanned":      len(candidates),
         "opportunities":      pool[:top_n],
     }
+    if not th_symbols:
+        result["source"] = "global_binance_fallback"
+    return result
 
 
 def _scan_fallback_coingecko(btc_regime: str, btc_chg: float, top_n: int) -> dict:
